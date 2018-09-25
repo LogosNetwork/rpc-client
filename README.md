@@ -41,14 +41,6 @@ await logos.account(PRIVATE_KEY).open()
 await logos.account(PRIVATE_KEY).send(0.01, RECIPIENT_ADDRESS)
 ```
 
-### Receive funds
-
-The `receive()` method will automatically receive the latest pending block for the given account.
-
-```typescript
-await logos.account(PRIVATE_KEY).receive()
-```
-
 ## Full list of methods
 
 All methods return native or Bluebird promises and are fully compatible with `async/await`.
@@ -63,7 +55,6 @@ const account = logos.account(PRIVATE_KEY)
 
 * `account.open(representative?: string, hash?: string)`
 * `account.send(logosAmount: string | number, address: string)`
-* `account.receive(hash?: string)`
 * `account.change(representative: string)`
 * `account.reasonBalance()`
 * `account.logosBalance()`
@@ -118,7 +109,6 @@ Methods to construct blocks:
 
 * `logos.blocks.createOpen(block: OpenBlock)`
 * `logos.blocks.createSend(block: SendBlock)`
-* `logos.blocks.createReceive(block: ReceiveBlock)`
 * `logos.blocks.createChange(block: ChangeBlock)`
 
 And a method to publish a constructed block to the network:
@@ -144,8 +134,6 @@ Allows you to generate and validate Proof of Work for a given block hash.
 * `logos.available()`
 * `logos.representatives()`
 * `logos.deterministicKey(seed: string, index?: string | number)`
-* `logos.minimumReceive.get()`
-* `logos.minimumReceive.set(logosAmount: string | number)`
 
 ## Calling RPC directly
 

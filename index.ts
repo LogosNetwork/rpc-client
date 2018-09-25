@@ -521,3 +521,4 @@ export class Logos {
     }
   }
 }
+module.exports = Logos;
