@@ -1,3 +1,4 @@
+import axios from 'axios'
 const {accountPair} = require('./util/util.js')
 import Converter from './util/converter'
 
@@ -26,6 +27,21 @@ function createAPI<API extends APIBase = any>(rpcClient: RPCClient) {
   }
 }
 
+export function createAxiosClient(
+  baseURL = 'http://34.201.126.140:7076'
+): RPCClient {
+  const headers = {}
+  const rpc = axios.create({
+    baseURL,
+    headers
+  })
+
+  return async function(params: any): Promise<any> {
+    const {data} = await rpc.post('/', params)
+    return data
+  }
+}
+
 export interface LogosConstructorOptions {
   url?: string
   rpcClient?: RPCClient
@@ -43,9 +59,8 @@ export class Logos {
     if (options.rpcClient) {
       this.rpc = createAPI<API>(options.rpcClient)
     } else {
-      this._log(
-        `No rpcClient host provided!`
-      )
+      const rpcClient = createAxiosClient(options.url)
+      this.rpc = createAPI<API>(rpcClient)
     }
   }
 

@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/LogosNetwork/rpc-client#readme",
   "dependencies": {
+    "axios": "^0.18.0",
     "bignumber.js": "^7.2.1"
   },
   "devDependencies": {
