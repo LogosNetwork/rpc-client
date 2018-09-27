@@ -28,7 +28,7 @@ function createAPI<API extends APIBase = any>(rpcClient: RPCClient) {
 }
 
 export function createAxiosClient(
-  baseURL = 'http://34.201.126.140:7076'
+  baseURL = 'http://52.215.106.54:55000'
 ): RPCClient {
   const headers = {}
   const rpc = axios.create({
