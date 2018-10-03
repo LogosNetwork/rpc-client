@@ -285,7 +285,7 @@ export class Logos {
         }).then(res => res.history)
       },
       info(account: string) {
-        return rpc('account_info', {account}).then(account => {
+        return rpc('account_info', {account: account, logos: null}).then(account => {
           _log(`(ACCOUNT) balance: ${account.balance}`)
           _log(`(ACCOUNT) latest hash: ${account.frontier}`)
           return account

@@ -46,7 +46,8 @@ export interface API extends APIBase {
 
   account_info: {
     body: {
-      account: string //target wallet
+      account: string, //target wallet
+      logos: null
     }
     response: {
       frontier: string
