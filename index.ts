@@ -397,7 +397,7 @@ export class Logos {
         return rpc('pending_exists', {hash}).then(res => res.exists === '1')
       },
       publish(block: string) {
-        return rpc('process', {block: block}).then(res => {
+        return rpc('process', {block: block, logos: null}).then(res => {
           _log(`(BLOCK) Published: ${res.hash}`)
           return res
         })

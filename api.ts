@@ -341,7 +341,8 @@ export interface API extends APIBase {
 
   process: {
     body: {
-      block: string
+      block: string,
+      logos: null
     }
     response: {
       hash: string
