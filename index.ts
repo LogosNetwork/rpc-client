@@ -64,6 +64,11 @@ export class Logos {
     }
   }
 
+  changeServer(url: string) {
+    const rpcClient = createAxiosClient(url)
+    this.rpc = createAPI<API>(rpcClient)
+  }
+
   _log(message: string) {
     if (this.debug) {
       console.log(message)
