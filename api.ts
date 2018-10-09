@@ -436,7 +436,6 @@ export type HistoryBlock = {
 export type SendBlock = {
   key: string
   destination: string
-  balance: string
   amount: string
   previous: string
   work: string

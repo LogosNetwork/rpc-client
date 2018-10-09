@@ -176,13 +176,12 @@ export class Logos {
       throw new Error('Must pass private_key argument')
     }
 
-    const {balance, frontier, work} = await this.generateLatestWork(privateKey)
+    const {frontier, work} = await this.generateLatestWork(privateKey)
     const amountReason = Converter.unit(amount, 'LOGOS', 'reason')
 
     const block = await this.blocks.createSend({
       key: privateKey,
       destination: toAddress,
-      balance,
       amount: amountReason,
       previous: frontier,
       work
@@ -248,12 +247,11 @@ export class Logos {
 
   async generateLatestWork(privateKey: string) {
     const {address} = accountPair(privateKey)
-    const {balance, frontier} = await this.accounts.info(address)
+    const {frontier} = await this.accounts.info(address)
     const {work} = await this.work.generate(frontier)
 
     return {
       address,
-      balance,
       frontier,
       work
     }
