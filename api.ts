@@ -177,7 +177,8 @@ export interface API extends APIBase {
 
   block_create: {
     body: {
-      type: 'open' | 'send' | 'receive' | 'change'
+      type: 'open' | 'send' | 'receive' | 'change',
+      logos: null,
       key: string //open, send, receive: PRIVATE KEY for logos wallet to 'sign' the block
       previous?: string
       work: string

@@ -360,6 +360,7 @@ export class Logos {
       createChange(block: ChangeBlock) {
         return rpc('block_create', {
           type: 'change',
+          logos: null,
           ...block
         }).then(res => {
           _log(`(BLOCK) Changing ${block.key}`)
@@ -392,6 +393,7 @@ export class Logos {
       createOpen(block: OpenBlock) {
         return rpc('block_create', {
           type: 'open',
+          logos: null,
           ...block
         }).then(res => {
           _log(`(BLOCK) Opening ${block.key}`)
@@ -410,6 +412,7 @@ export class Logos {
       createReceive(block: ReceiveBlock) {
         return rpc('block_create', {
           type: 'receive',
+          logos: null,
           ...block
         }).then(res => {
           _log(`Received block ${block.source}`)
@@ -419,6 +422,7 @@ export class Logos {
       createSend(block: SendBlock) {
         return rpc('block_create', {
           type: 'send',
+          logos: null,
           ...block
         }).then(res => {
           _log(`(BLOCK) Sending ${block.amount} to ${block.destination}`)
@@ -435,7 +439,7 @@ export class Logos {
   }
 
   get convert() {
-    type Denomination = 'pathos' | 'ethos'
+    type Denomination = 'pathos' | 'ethos' | 'LOGOS'
     return {
       toReason(amount: string | number, denomination: Denomination) {
         return Converter.unit(amount, denomination, 'reason')
