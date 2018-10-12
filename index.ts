@@ -385,7 +385,7 @@ export class Logos {
         } else {
           return rpc('block', {
             hash: hashOrHashes as string
-          }).then(res => res.contents)
+          }).then(res => res)
         }
       },
       createOpen(block: OpenBlock) {
