@@ -261,8 +261,8 @@ export class Logos {
   get accounts() {
     const {rpc, _log} = this
     return {
-      get(publicKey: string) {
-        return rpc('account_get', {key: publicKey})
+      toAddress(publicKey: string) {
+        return rpc('account_from_key', {key: publicKey})
       },
       reasonBalance(account: string) {
         return rpc('account_balance', {account})
@@ -295,7 +295,7 @@ export class Logos {
         })
       },
       key(account: string) {
-        return rpc('account_key', {account})
+        return rpc('account_to_key', {account})
       },
       ledger(account: string, count?: number, details?: boolean) {
         return rpc('ledger', {

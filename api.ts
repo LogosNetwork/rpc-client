@@ -25,7 +25,7 @@ export interface API extends APIBase {
     }
   }
 
-  account_get: {
+  account_from_key: {
     body: {
       key: string
     }
@@ -59,7 +59,7 @@ export interface API extends APIBase {
     }
   }
 
-  account_key: {
+  account_to_key: {
     body: {
       account: string
     }

@@ -78,7 +78,7 @@ Used for generating accounts and extrapolating public keys/addresses from privat
 
 Account methods take a single account string or in some cases, an array of accounts.
 
-* `logos.accounts.get(publicKey: string)`
+* `logos.accounts.toAddress(publicKey: string)`
 * `logos.accounts.reasonBalance(account: string)`
 * `logos.accounts.logosBalance(account: string)`
 * `logos.accounts.balances(accounts: string[])`
