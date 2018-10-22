@@ -419,7 +419,7 @@ export class Logos {
       },
       createSend(block: SendBlock) {
         return rpc('block_create', {
-          type: 'send',
+          type: 'state',
           logos: null,
           ...block
         }).then(res => {
