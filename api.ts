@@ -128,6 +128,15 @@ export interface API extends APIBase {
     }
   }
 
+  generate_micro_block: {
+    body: {
+      last?: boolean
+    }
+    response: {
+      contents: string
+    }
+  }
+
   block: {
     body: {
       hash: string

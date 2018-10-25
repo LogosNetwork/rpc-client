@@ -518,6 +518,13 @@ export class Logos {
   available() {
     return this.rpc('available_supply').then(res => res.available)
   }
+
+  generateMicroBlock(last?: boolean) {
+    return this.rpc('generate_microblock', {
+      last: last
+    }).then(res => res)
+  }
+
   representatives() {
     return this.rpc('representatives').then(res => res.representatives)
   }
