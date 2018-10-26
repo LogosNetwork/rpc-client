@@ -372,16 +372,12 @@ export class Logos {
         })
       },
       //Get one or many block's information
-      info(hashOrHashes: string | string[], details?: boolean) {
+      info(hashOrHashes: string | string[]) {
         const getMulti = (typeof hashOrHashes as string | string[]) === 'array'
         if (getMulti) {
-          return details
-            ? rpc('blocks_info', {
-                hashes: hashOrHashes as string[]
-              }).then(res => res.blocks)
-            : rpc('blocks', {
-                hashes: hashOrHashes as string[]
-              }).then(res => res.blocks)
+          return rpc('blocks', {
+            hashes: hashOrHashes as string[]
+          }).then(res => res.blocks)
         } else {
           return rpc('block', {
             hash: hashOrHashes as string

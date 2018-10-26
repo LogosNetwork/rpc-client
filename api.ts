@@ -205,21 +205,6 @@ export interface API extends APIBase {
     }
   }
 
-  blocks_info: {
-    body: {
-      hashes: string[]
-    }
-    response: {
-      blocks: {
-        [account: string]: {
-          contents: TransactionRequest
-          block_account: string
-          amount: string
-        }
-      }
-    }
-  }
-
   chain: {
     body: {
       block: string
