@@ -40,7 +40,7 @@ export interface API extends APIBase {
       count?: number //return limit
     }
     response: {
-      history: HistoryBlock[]
+      history: TransactionHistory[]
     }
   }
 
@@ -142,7 +142,7 @@ export interface API extends APIBase {
       hash: string
     }
     response: {
-      contents: GetBlock
+      contents: TransactionRequest
     }
   }
 
@@ -152,7 +152,7 @@ export interface API extends APIBase {
     }
     response: {
       blocks: {
-        [account: string]: GetBlock
+        [account: string]: TransactionRequest
       }
     }
   }
@@ -212,7 +212,7 @@ export interface API extends APIBase {
     response: {
       blocks: {
         [account: string]: {
-          contents: GetBlock
+          contents: TransactionRequest
           block_account: string
           amount: string
         }
@@ -270,6 +270,34 @@ export interface API extends APIBase {
     }
   }
 
+  epochs_latest: {
+    body: {
+      count: string | number
+    }
+    response: {
+      history: Epoch[]
+    }
+  }
+
+  micro_blocks_latest: {
+    body: {
+      count: string | number
+    }
+    response: {
+      history: MicroEpoch[]
+    }
+  }
+
+  batch_state_blocks_latest: {
+    body: {
+      count: string | number,
+      delegate_id: string | number
+    }
+    response: {
+      history: BatchStateBlock[]
+    }
+  }
+
   frontier_count: {
     body: {
       account: string
@@ -303,7 +331,7 @@ export interface API extends APIBase {
       hash: string
       count: number
     }
-    response: HistoryBlock[]
+    response: TransactionHistory[]
   }
 
   ledger: {
@@ -426,7 +454,38 @@ export interface API extends APIBase {
   }
 }
 
-export type GetBlock = {
+export type BatchStateBlock = {
+  type: string
+  previous: string
+  hash: string
+  block_count: string
+  signature: string
+  blocks: [TransactionRequest]
+}
+
+export type Epoch = {
+  account: string
+  epoch_number: string
+  micro_block_tip: string
+  transaction_fee_pool: string
+  signature: string
+  delegates: [delegate]
+}
+
+export type MicroEpoch = {
+  timestamp: string
+  previous: string
+  hash: string
+  delegate: string
+  epoch_number: string
+  micro_block_number: string
+  last_micro_block: string
+  tips: [string]
+  number_batch_blocks: string
+  signature: string
+}
+
+export type TransactionRequest = {
   type: string
   account: string
   representative: string
@@ -435,7 +494,13 @@ export type GetBlock = {
   signature: string
 }
 
-export type HistoryBlock = {
+export type delegate = {
+  account: string
+  vote: string
+  stake: string
+}
+
+export type TransactionHistory = {
   type: string
   account: string
   hash: string

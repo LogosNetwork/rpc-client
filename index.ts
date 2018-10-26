@@ -152,7 +152,7 @@ export class Logos {
       sendBlockHash = res.blocks[0]
     }
 
-    const block = await this.blocks.createOpen({
+    const block = await this.transactions.createOpen({
       previous: publicKey,
       key: privateKey,
       source: sendBlockHash,
@@ -160,7 +160,7 @@ export class Logos {
       representative
     })
 
-    const result = await this.blocks.publish(block.block)
+    const result = await this.transactions.publish(block.block)
     _log(
       `Opened Logos account ${address} with block ${
         result.hash
@@ -179,7 +179,7 @@ export class Logos {
     const {frontier, work} = await this.generateLatestWork(privateKey)
     const amountReason = Converter.unit(amount, 'LOGOS', 'reason')
 
-    const block = await this.blocks.createSend({
+    const block = await this.transactions.createSend({
       key: privateKey,
       destination: toAddress,
       amount: amountReason,
@@ -187,7 +187,7 @@ export class Logos {
       work
     })
 
-    const result = await this.blocks.publish(block.block)
+    const result = await this.transactions.publish(block.block)
     _log(`Sent ${amountReason} reason to ${toAddress}!`)
     return result.hash
   }
@@ -211,14 +211,14 @@ export class Logos {
       sendBlockHash = res.blocks[0]
     }
 
-    const block = await this.blocks.createReceive({
+    const block = await this.transactions.createReceive({
       key: privateKey,
       previous: frontier,
       work,
       source: sendBlockHash
     })
 
-    const result = await this.blocks.publish(block.block)
+    const result = await this.transactions.publish(block.block)
     _log(`Received block ${sendBlockHash} to wallet ${address}!`)
     return result
   }
@@ -233,14 +233,14 @@ export class Logos {
 
     const {frontier, work} = await this.generateLatestWork(privateKey)
 
-    const block = await this.blocks.createChange({
+    const block = await this.transactions.createChange({
       previous: frontier,
       representative,
       work,
       key: privateKey
     })
 
-    const result = await this.blocks.publish(block.block)
+    const result = await this.transactions.publish(block.block)
     _log(`Opened Logos block ${result.hash} with rep. ${representative}!`)
     return result
   }
@@ -339,7 +339,7 @@ export class Logos {
     }
   }
 
-  get blocks() {
+  get transactions() {
     const {rpc, _log} = this
 
     return {
@@ -432,6 +432,43 @@ export class Logos {
           block,
           count: count || 1000
         })
+      }
+    }
+  }
+
+  get epochs() {
+    const {rpc} = this
+
+    return {
+      history(count: string | number) {
+        return rpc('epochs_latest', {
+          count: count || 1000
+        }).then(res => res)
+      }
+    }
+  }
+
+  get microEpochs() {
+    const {rpc} = this
+
+    return {
+      history(count: string | number) {
+        return rpc('micro_blocks_latest', {
+          count: count || 1000
+        }).then(res => res)
+      }
+    }
+  }
+
+  get batchStateBlocks() {
+    const {rpc} = this
+
+    return {
+      history(count: string | number, delegate_id: string | number) {
+        return rpc('batch_state_blocks_latest', {
+          count: count || 1000,
+          delegate_id: delegate_id || "0"
+        }).then(res => res)
       }
     }
   }
