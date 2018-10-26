@@ -466,12 +466,12 @@ export class Logos {
     }
   }
 
-  get batchStateBlocks() {
+  get batchBlocks() {
     const {rpc} = this
 
     return {
       history(count: string | number, delegate_id: string | number) {
-        return rpc('batch_state_blocks_latest', {
+        return rpc('batch_blocks_latest', {
           count: count || 1000,
           delegate_id: delegate_id || "0"
         }).then(res => res)

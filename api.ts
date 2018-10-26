@@ -296,17 +296,17 @@ export interface API extends APIBase {
       hashes: string[]
     }
     response: {
-      blocks: BatchStateBlock[]
+      blocks: BatchBlock[]
     }
   }
 
-  batch_state_blocks_latest: {
+  batch_blocks_latest: {
     body: {
       count: string | number,
       delegate_id: string | number
     }
     response: {
-      history: BatchStateBlock[]
+      history: BatchBlock[]
     }
   }
 
@@ -466,7 +466,7 @@ export interface API extends APIBase {
   }
 }
 
-export type BatchStateBlock = {
+export type BatchBlock = {
   type: string
   previous: string
   hash: string
