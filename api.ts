@@ -255,6 +255,15 @@ export interface API extends APIBase {
     }
   }
 
+  epochs: {
+    body: {
+      hashes: string[]
+    }
+    response: {
+      blocks: Epoch[]
+    }
+  }
+
   epochs_latest: {
     body: {
       count: string | number
@@ -264,12 +273,30 @@ export interface API extends APIBase {
     }
   }
 
+  micro_blocks: {
+    body: {
+      hashes: string[]
+    }
+    response: {
+      blocks: MicroEpoch[]
+    }
+  }
+
   micro_blocks_latest: {
     body: {
       count: string | number
     }
     response: {
       history: MicroEpoch[]
+    }
+  }
+
+  batch_blocks: {
+    body: {
+      hashes: string[]
+    }
+    response: {
+      blocks: BatchStateBlock[]
     }
   }
 
