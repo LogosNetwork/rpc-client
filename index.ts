@@ -13,7 +13,7 @@ import {
 
 //TODO Change this representative to something signifigant.
 export const LogosRepresentative =
-  'xrb_3rropjiqfxpmrrkooej4qtmm1pueu36f9ghinpho4esfdor8785a455d16nf'
+  'lgs_3rropjiqfxpmrrkooej4qtmm1pueu36f9ghinpho4esfdor8785a455d16nf'
 export const BounceAddress = ''
 
 export type RPCClient = (params: any) => Promise<any>

@@ -141,7 +141,7 @@ function array_crop(array) {
 }
 
 exports.keyFromAccount = function(account) {
-  if (/^xrb_[13][13456789abcdefghijkmnopqrstuwxyz]{59}$/.test(account)) {
+  if (/^lgs_[13][13456789abcdefghijkmnopqrstuwxyz]{59}$/.test(account)) {
     var account_crop = account.substring(4, 64)
     var key_uint4 = array_crop(
       uint5_uint4(string_uint5(account_crop.substring(0, 52)))
@@ -164,7 +164,7 @@ exports.accountFromKey = function(hex) {
     uint4_uint5(uint8_uint4(blake2b(key_bytes, null, 5).reverse()))
   )
   var c_account = uint5_string(uint4_uint5(hex_uint4('0' + hex)))
-  return 'xrb_' + c_account + checksum
+  return 'lgs_' + c_account + checksum
 }
 
 /*
