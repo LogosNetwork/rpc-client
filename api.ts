@@ -266,7 +266,8 @@ export interface API extends APIBase {
 
   epochs_latest: {
     body: {
-      count: string | number
+      hash?: string //starting hash
+      count?: string | number //return limit
     }
     response: {
       history: Epoch[]
@@ -284,7 +285,8 @@ export interface API extends APIBase {
 
   micro_blocks_latest: {
     body: {
-      count: string | number
+      hash?: string //starting hash
+      count?: string | number //return limit
     }
     response: {
       history: MicroEpoch[]
@@ -302,8 +304,9 @@ export interface API extends APIBase {
 
   batch_blocks_latest: {
     body: {
-      count: string | number,
-      delegate_id: string | number
+      count?: string | number,
+      delegate_id: string | number,
+      hash?: string //starting hash
     }
     response: {
       history: BatchBlock[]

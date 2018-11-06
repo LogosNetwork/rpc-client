@@ -436,9 +436,10 @@ export class Logos {
     const {rpc} = this
 
     return {
-      history(count: string | number) {
+      history(count: string | number, hash: string) {
         return rpc('epochs_latest', {
-          count: count || 1000
+          count: count || 1000,
+          head: hash || null
         }).then(res => res)
       },
       get(hashes: [string]) {
@@ -453,9 +454,10 @@ export class Logos {
     const {rpc} = this
 
     return {
-      history(count: string | number) {
+      history(count: string | number, hash: string) {
         return rpc('micro_blocks_latest', {
-          count: count || 1000
+          count: count || 1000,
+          head: hash || null
         }).then(res => res)
       },
       get(hashes: [string]) {
@@ -470,10 +472,11 @@ export class Logos {
     const {rpc} = this
 
     return {
-      history(count: string | number, delegate_id: string | number) {
+      history(count: string | number, delegate_id: string | number, hash: string) {
         return rpc('batch_blocks_latest', {
           count: count || 1000,
-          delegate_id: delegate_id || "0"
+          delegate_id: delegate_id || "0",
+          head: hash || null
         }).then(res => res)
       },
       get(hashes: [string]) {
