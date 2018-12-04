@@ -195,6 +195,7 @@ export interface API extends APIBase {
       representative?: string //open: A 'representative' wallet to use your balance as vote weight
       source?: string //open, receive: Always refers to the most recent block hash on YOUR account
       signature?: string
+      transaction_fee?: string // Transaction fee for the transaction fee minimum
       destination?: string //send: destination logos wallet
       balance?: string //send: current balance of debited address
       amount?: string
@@ -527,6 +528,7 @@ export type SendBlock = {
   destination: string
   amount: string
   previous: string
+  transaction_fee: string
   work: string
 }
 

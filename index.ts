@@ -82,8 +82,8 @@ export class Logos {
       open: (respresentative?: string, hash?: string) => {
         return this.open(private_key, respresentative, hash)
       },
-      send: (amount: string | number, address: string) => {
-        return this.send(private_key, amount, address)
+      send: (amount: string | number, address: string, transactionFee: string) => {
+        return this.send(private_key, amount, address, transactionFee)
       },
       receive: (hash?: string) => {
         return this.receive(private_key, hash)
@@ -170,7 +170,7 @@ export class Logos {
   }
 
   //Top-level call: send block
-  async send(privateKey: string, amount: string | number, toAddress: string) {
+  async send(privateKey: string, amount: string | number, toAddress: string, transactionFee: string) {
     const {_log} = this
     if (!privateKey) {
       throw new Error('Must pass private_key argument')
@@ -184,12 +184,13 @@ export class Logos {
       destination: toAddress,
       amount: amountReason,
       previous: frontier,
+      transaction_fee: transactionFee,
       work
     })
 
     const result = await this.transactions.publish(block.block)
     _log(`Sent ${amountReason} reason to ${toAddress}!`)
-    return result.hash
+    return result 
   }
 
   //Top-level call: receive block
