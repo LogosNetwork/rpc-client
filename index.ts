@@ -28,7 +28,8 @@ function createAPI<API extends APIBase = any>(rpcClient: RPCClient) {
 }
 
 export function createAxiosClient(
-  baseURL = 'http://52.215.106.54:55000'
+  baseURL = 'https://pla.bs/rpc',
+  targetURL?: string
 ): RPCClient {
   const headers = {}
   const rpc = axios.create({
@@ -37,13 +38,20 @@ export function createAxiosClient(
   })
 
   return async function(params: any): Promise<any> {
-    const {data} = await rpc.post('/', params)
-    return data
+    if (!targetURL) {
+      const {data} = await rpc.post('/', params)
+      return data
+    } else {
+      params.targetURL = targetURL
+      const {data} = await rpc.post('/', params)
+      return data
+    }
   }
 }
 
 export interface LogosConstructorOptions {
   url?: string
+  proxyURL?: string
   rpcClient?: RPCClient
   debug?: boolean
 }
@@ -58,15 +66,23 @@ export class Logos {
 
     if (options.rpcClient) {
       this.rpc = createAPI<API>(options.rpcClient)
+    } else if (options.proxyURL) {
+      const rpcClient = createAxiosClient(options.proxyURL, options.url)
+      this.rpc = createAPI<API>(rpcClient)
     } else {
       const rpcClient = createAxiosClient(options.url)
       this.rpc = createAPI<API>(rpcClient)
     }
   }
 
-  changeServer(url: string) {
-    const rpcClient = createAxiosClient(url)
-    this.rpc = createAPI<API>(rpcClient)
+  changeServer(baseURL: string, targetURL?: string) {
+    if (targetURL) {
+      const rpcClient = createAxiosClient(targetURL, baseURL)
+      this.rpc = createAPI<API>(rpcClient)
+    } else {
+      const rpcClient = createAxiosClient(baseURL)
+      this.rpc = createAPI<API>(rpcClient)
+    }
   }
 
   _log(message: string) {
