@@ -78,7 +78,7 @@ export class Logos {
 
   changeServer(baseURL: string, targetURL?: string) {
     if (targetURL) {
-      const rpcClient = createAxiosClient(targetURL, baseURL)
+      const rpcClient = createAxiosClient(baseURL, targetURL)
       this.rpc = createAPI<API>(rpcClient)
     } else {
       const rpcClient = createAxiosClient(baseURL)
