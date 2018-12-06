@@ -15,6 +15,7 @@ import {
 export const LogosRepresentative =
   'lgs_3rropjiqfxpmrrkooej4qtmm1pueu36f9ghinpho4esfdor8785a455d16nf'
 export const BounceAddress = ''
+export const minimumTransactionFee = '10000000000000000000000'
 
 export type RPCClient = (params: any) => Promise<any>
 function createAPI<API extends APIBase = any>(rpcClient: RPCClient) {
@@ -98,7 +99,7 @@ export class Logos {
       open: (respresentative?: string, hash?: string) => {
         return this.open(private_key, respresentative, hash)
       },
-      send: (amount: string | number, address: string, transactionFee = "10000000000000000000000") => {
+      send: (amount: string | number, address: string, transactionFee = minimumTransactionFee) => {
         return this.send(private_key, amount, address, transactionFee)
       },
       receive: (hash?: string) => {
@@ -186,7 +187,7 @@ export class Logos {
   }
 
   //Top-level call: send block
-  async send(privateKey: string, amount: string | number, toAddress: string, transactionFee = "10000000000000000000000") {
+  async send(privateKey: string, amount: string | number, toAddress: string, transactionFee = minimumTransactionFee) {
     const {_log} = this
     if (!privateKey) {
       throw new Error('Must pass private_key argument')
