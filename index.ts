@@ -28,7 +28,7 @@ function createAPI<API extends APIBase = any>(rpcClient: RPCClient) {
 }
 
 export function createAxiosClient(
-  baseURL = 'https://pla.bs/rpc',
+  baseURL = 'https://pla.bs',
   targetURL?: string
 ): RPCClient {
   const headers = {}
@@ -43,7 +43,7 @@ export function createAxiosClient(
       return data
     } else {
       params.targetURL = targetURL
-      const {data} = await rpc.post('/', params)
+      const {data} = await rpc.post('/rpc', params)
       return data
     }
   }
@@ -98,7 +98,7 @@ export class Logos {
       open: (respresentative?: string, hash?: string) => {
         return this.open(private_key, respresentative, hash)
       },
-      send: (amount: string | number, address: string, transactionFee: string) => {
+      send: (amount: string | number, address: string, transactionFee = "10000000000000000000000") => {
         return this.send(private_key, amount, address, transactionFee)
       },
       receive: (hash?: string) => {
@@ -186,7 +186,7 @@ export class Logos {
   }
 
   //Top-level call: send block
-  async send(privateKey: string, amount: string | number, toAddress: string, transactionFee: string) {
+  async send(privateKey: string, amount: string | number, toAddress: string, transactionFee = "10000000000000000000000") {
     const {_log} = this
     if (!privateKey) {
       throw new Error('Must pass private_key argument')
