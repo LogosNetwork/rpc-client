@@ -490,10 +490,10 @@ export class Logos {
     const {rpc} = this
 
     return {
-      history(count: string | number, delegate_id: string | number, hash: string) {
+      history(count: string | number, delegateIndex: string | number, hash: string) {
         return rpc('batch_blocks_latest', {
           count: count || 1000,
-          delegate_id: delegate_id || "0",
+          delegate_id: delegateIndex || "0",
           head: hash
         }).then(res => res)
       },
