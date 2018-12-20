@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js'
 
-type NanoUnit = 'reason' | 'LOGOS' | 'pathos' | 'ethos'
+type LogosUnit = 'reason' | 'LOGOS' | 'pathos' | 'ethos'
 
 const Converter = {
-  unit(input: string | number, input_unit: NanoUnit, output_unit: NanoUnit) {
+  unit(input: string | number, input_unit: LogosUnit, output_unit: LogosUnit) {
     let value = new BigNumber(input.toString())
 
     // Step 1: to reason

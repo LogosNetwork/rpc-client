@@ -68,24 +68,6 @@ export interface API extends APIBase {
     }
   }
 
-  account_representative: {
-    body: {
-      account: string
-    }
-    response: {
-      representative: string
-    }
-  }
-
-  account_weight: {
-    body: {
-      account: string
-    }
-    response: {
-      weight: string
-    }
-  }
-
   accounts_balances: {
     body: {
       accounts: string[]
@@ -98,29 +80,6 @@ export interface API extends APIBase {
     }
   }
 
-  accounts_frontiers: {
-    body: {
-      accounts: string[]
-    }
-    response: {
-      frontiers: {
-        [account: string]: string
-      }
-    }
-  }
-
-  accounts_pending: {
-    body: {
-      accounts: string[]
-      count?: number
-    }
-    response: {
-      blocks: {
-        [account: string]: string
-      }
-    }
-  }
-
   available_supply: {
     body: {}
     response: {
@@ -128,7 +87,7 @@ export interface API extends APIBase {
     }
   }
 
-  generate_micro_block: {
+  generate_microblock: {
     body: {
       last?: boolean
     }
@@ -157,15 +116,6 @@ export interface API extends APIBase {
     }
   }
 
-  block_account: {
-    body: {
-      hash: string
-    }
-    response: {
-      account: string
-    }
-  }
-
   block_count: {
     body: {}
     response: {
@@ -174,62 +124,19 @@ export interface API extends APIBase {
     }
   }
 
-  block_count_type: {
-    body: {}
-    response: {
-      send: string
-      receive: string
-      open: string
-      change: string
-    }
-  }
-
   block_create: {
     body: {
-      type: 'open' | 'send' | 'receive' | 'change' | 'state',
-      logos: null,
-      key: string //open, send, receive: PRIVATE KEY for logos wallet to 'sign' the block
+      type: 'state',
+      key: string //send: PRIVATE KEY for logos wallet to 'sign' the block
       previous?: string
       work: string
-      account?: string //open, send: The 'target' wallet which is being opened or debited
-      representative?: string //open: A 'representative' wallet to use your balance as vote weight
-      source?: string //open, receive: Always refers to the most recent block hash on YOUR account
-      signature?: string
       transaction_fee?: string // Transaction fee for the transaction fee minimum
       destination?: string //send: destination logos wallet
-      balance?: string //send: current balance of debited address
       amount?: string
     }
     response: {
       hash: string
       block: string
-    }
-  }
-
-  chain: {
-    body: {
-      block: string
-      count: number
-    }
-  }
-
-  delegators: {
-    body: {
-      account: string
-    }
-    response: {
-      delegators: {
-        [account: string]: string
-      }
-    }
-  }
-
-  delegators_count: {
-    body: {
-      account: string
-    }
-    response: {
-      count: string
     }
   }
 
@@ -244,18 +151,6 @@ export interface API extends APIBase {
       account: string
     }
   }
-
-  frontiers: {
-    body: {
-      account: string
-    }
-    response: {
-      frontiers: {
-        [account: string]: string
-      }
-    }
-  }
-
   epochs: {
     body: {
       hashes: string[]
@@ -314,15 +209,6 @@ export interface API extends APIBase {
     }
   }
 
-  frontier_count: {
-    body: {
-      account: string
-    }
-    response: {
-      count: string
-    }
-  }
-
   key_create: {
     body: any
     response: AccountInfo
@@ -333,65 +219,12 @@ export interface API extends APIBase {
     response: AccountInfo
   }
 
-  krai_to_raw: {
-    body: {
-      amount: string | number
-    }
-    response: {
-      amount: string
-    }
-  }
-
   history: {
     body: {
       hash: string
       count: number
     }
     response: TransactionHistory[]
-  }
-
-  ledger: {
-    body: {
-      account: string
-      count?: number
-      representative?: boolean
-      weight?: boolean
-      pending?: boolean
-    }
-    response: {
-      accounts: {
-        [account: string]: {
-          frontier: string
-          open_block: string
-          representative_block: string
-          balance: string
-          modified_timestamp: string
-          block_count: string
-          representative?: string
-          weight?: string
-          pending?: string
-        }
-      }
-    }
-  }
-
-  pending: {
-    body: {
-      account: string
-      count: number
-    }
-    response: {
-      blocks: string[]
-    }
-  }
-
-  pending_exists: {
-    body: {
-      hash: string
-    }
-    response: {
-      exists: '1' | '0'
-    }
   }
 
   process: {
@@ -401,52 +234,6 @@ export interface API extends APIBase {
     }
     response: {
       hash: string
-    }
-  }
-
-  receive: {
-    body: {
-      wallet: string
-      account: string
-      block: string
-    }
-    response: {
-      block: string
-    }
-  }
-
-  receive_minimum: {
-    body: {}
-    response: {
-      amount: string
-    }
-  }
-
-  receive_minimum_set: {
-    body: {
-      amount: string
-    }
-    response: {
-      success: string
-    }
-  }
-
-  representatives: {
-    body: {}
-    response: {
-      representatives: {
-        [account: string]: string
-      }
-    }
-  }
-
-  successors: {
-    body: {
-      block: string
-      count: number
-    }
-    response: {
-      blocks: string[]
     }
   }
 
@@ -530,28 +317,6 @@ export type SendBlock = {
   previous: string
   transaction_fee: string
   work: string
-}
-
-export type ReceiveBlock = {
-  key: string
-  previous: string
-  work: string
-  source: string
-}
-
-export type OpenBlock = {
-  key: string
-  source: string
-  previous: string
-  representative: string
-  work: string
-}
-
-export type ChangeBlock = {
-  previous: string
-  key: string
-  work: string
-  representative: string
 }
 
 export type AccountInfo = {
