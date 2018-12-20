@@ -1,4 +1,11 @@
-# Logos RPC Client
+<h1 align="center" style="text-align:center">
+  <br>
+  <a href="http://www.logos.network"><img src="https://www.logos.network/assets/images/custom/logo.png" alt="Logos Network Logo" width="200"></a>
+  <br>
+  Logos Network
+</h1>
+
+<h4 align="center" style="text-align:center">Logos RPC Client</h4>
 
 Promise-based client for interacting and building services on top of the Logos network
 
@@ -8,10 +15,29 @@ Promise-based client for interacting and building services on top of the Logos n
 
 ### Your own Logos RPC server
 
-```typescript
+
+To setup a direct connection to a Logos node do the following
+```javascript
 const {Logos} = require('logos-rpc-client')
-const logos = new Logos({url: 'http://localhost:7076'})
+const logos = new Logos({url: 'http://100.25.175.142:55000'})
 ```
+
+You may also proxy your RPC calls through another server
+```javascript
+const {Logos} = require('logos-rpc-client')
+const logos = new Logos({url: 'http://100.25.175.142:55000', proxyURL: 'https://pla.bs'})
+```
+
+For your proxy server include the following to route the rpc call
+```javascript
+app.post('/rpc', async (req, res) => {
+  let targetURL = req.body.targetURL
+  delete req.body.targetURL
+  const response = await axios.post(`${targetURL}/`, req.body)
+  res.send(response.data)
+})
+```
+
 
 ### Debug mode
 
@@ -23,21 +49,14 @@ To enable some helpful logs, pass `debug: true` as a paramater in the constructo
 
 It's easy to generate a new random account. You'll get the account's private and public keys along with its address.
 
-```typescript
+```javascript
 const {privateKey, publicKey, address} = await logos.key.create()
 ```
 
-### Open account
-
-In order to open an account and let the network know it exists, we'll need publish an `open` block. An account can't be opened with zero balance, so we'll first need to send some Logos to our account's address from our own wallet then call `open()`.
-
-```typescript
-await logos.account(PRIVATE_KEY).open()
-```
 
 ### Send funds
 
-```typescript
+```javascript
 await logos.account(PRIVATE_KEY).send(0.01, RECIPIENT_ADDRESS)
 ```
 
@@ -53,26 +72,13 @@ If you're just looking to transact with Logos, these methods will cover 90% of y
 const account = logos.account(PRIVATE_KEY)
 ```
 
-* `account.open(representative?: string, hash?: string)`
 * `account.send(logosAmount: string | number, address: string)`
-* `account.change(representative: string)`
 * `account.reasonBalance()`
 * `account.logosBalance()`
 * `account.blockCount()`
 * `account.history(count?: number)`
 * `account.info()`
 * `account.publicKey()`
-* `account.ledger(count?: number, details?: boolean)`
-* `account.pending(count?: number, minLogosThreshold?: string | number)`
-* `account.representative()`
-* `account.weight()`
-
-### Keys
-
-Used for generating accounts and extrapolating public keys/addresses from private keys.
-
-* `logos.key.create()`
-* `logos.key.expand(privateKey: string)`
 
 ### Accounts
 
@@ -83,44 +89,67 @@ Account methods take a single account string or in some cases, an array of accou
 * `logos.accounts.logosBalance(account: string)`
 * `logos.accounts.balances(accounts: string[])`
 * `logos.accounts.blockCount(account: string)`
-* `logos.accounts.frontiers(accounts: string[])`
 * `logos.accounts.history(account: string, count?: number)`
 * `logos.accounts.info(account: string)`
 * `logos.accounts.key(account: string)`
-* `logos.accounts.ledger(account: string, count?: number, details?: boolean)`
-* `logos.accounts.pending(account: string, count?: number, minLogosThreshold?: string | number)`
-* `logos.accounts.pendingMulti(accounts: string[], count?: number, minLogosThreshold?: string | number)`
-* `logos.accounts.representative(account: string)`
-* `logos.accounts.weight(account: string)`
 
-### Blocks
+### Keys
 
-Has methods to get information about blocks:
+Used for generating accounts and extrapolating public keys/addresses from private keys.
 
-* `logos.blocks.account(hash: string)`
-* `logos.blocks.count(byType?: boolean)`
-* `logos.blocks.chain(hash: string, count?: number)`
-* `logos.blocks.history(hash: string, count?: number)`
-* `logos.blocks.info(hashOrHahes: string | string[], details?: boolean)`
-* `logos.blocks.pending(hash: string)`
-* `logos.blocks.successors(block: string, count?: number)`
+* `logos.key.create()`
+* `logos.key.expand(privateKey: string)`
 
-Methods to construct blocks:
+### Transactions
 
-* `logos.blocks.createOpen(block: OpenBlock)`
-* `logos.blocks.createSend(block: SendBlock)`
-* `logos.blocks.createChange(block: ChangeBlock)`
+Has a method to get information about transactions:
+
+* `logos.transactions.info(hashOrHahes: string | string[], details?: boolean)`
+
+Method to construct a transaction:
+
+* `logos.transactions.createSend(block: SendBlock)`
 
 And a method to publish a constructed block to the network:
 
-* `logos.blocks.publish(block: string)`
+* `logos.transactions.publish(block: string)`
+
+### Batch Blocks
+
+Allows you to retrieve information on batch blocks
+
+* `logos.batchBlocks.history(count: string | number, delegateIndex: string | number, hash: string)`
+* `logos.batchBlocks.get(hashes: [string])`
+
+### Micro Epochs
+
+Allows you to retrieve information on micro epochs
+
+* `logos.microEpochs.history(count: string | number, hash: string)`
+* `logos.microEpochs.get(hashes: [string])`
+
+
+### Epochs
+
+Allows you to retrieve information on epochs
+
+* `logos.epochs.history(count: string | number, hash: string)`
+* `logos.epochs.get(hashes: [string])`
+
+
+### Batch Blocks
+
+Allows you to retrieve information on batch blocks
+
+* `logos.batchBlocks.history(count: string | number, delegateIndex: string | number, hash: string)`
+* `logos.batchBlocks.get(hashes: [string])`
 
 ### Convert
 
-Allows you to convert `ethos` and `pathos` amounts to and from their reason values.
+Allows you to convert `LOGOS` amounts to and from their reason values. Reason is the smallest unit of the Logos currency.
 
-* `logos.convert.toReason(amount: string | number, denomination: 'ethos' | 'pathos')`
-* `logos.convert.fromReason(amount: string, denomination: 'ethos' | 'pathos')`
+* `logos.convert.toReason(amount: string | number, denomination: 'LOGOS')`
+* `logos.convert.fromReason(amount: string, denomination: 'LOGOS')`
 
 ### Work
 
@@ -132,7 +161,6 @@ Allows you to generate and validate Proof of Work for a given block hash.
 ### Other
 
 * `logos.available()`
-* `logos.representatives()`
 * `logos.deterministicKey(seed: string, index?: string | number)`
 
 ## Calling RPC directly
