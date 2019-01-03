@@ -13,7 +13,7 @@ Promise-based client for interacting and building services on top of the Logos n
 
 `npm install logos-rpc-client`
 
-### Your own Logos RPC server
+### Your own Logos Node
 
 
 To setup a direct connection to a Logos node do the following
@@ -36,6 +36,42 @@ app.post('/rpc', async (req, res) => {
   const response = await axios.post(`${targetURL}/`, req.body)
   res.send(response.data)
 })
+```
+
+### Remote Logos Node
+
+Simply follow the same steps are seen above and use one of the current delegates found here: [delegate list](https://pla.bs/delegates) sorted by their delegate id.
+
+
+### Delegate Load Balancing
+
+When building for production you **must** select the proper delegate for publishing your transactions. If you do not select the proper delegate you will incur a 5 second transaction confirmation penalty. This is an incentive to load balance the requests to the 32 delegates equally.
+
+Here is an example of how to calculate the proper delegate id given an ACCOUNT_ID.
+
+```javascript
+let delegateID = null
+
+//Check the most recent 
+//on the account who wants to publish
+if (accountFrontier === '0000000000000000000000000000000000000000000000000000000000000000') {
+    // If the frontier doesn't exist We use the 
+    // last two digits of the hexadecimal hash 
+    // of the public key mod 32 to give us a 
+    // random distribution
+    delegateID = parseInt(publicKey.slice(-2), 16) % 32
+} else {
+    // When the account has a previous transaction 
+    // we use the last two digits of the hexadecimal hash
+    // mod 32 to give us a random distribution
+    delegateID = parseInt(accountFrontier.slice(-2), 16) % 32
+}
+```
+
+Once you have the delegate id you can find the delegate from the [delegate list](https://pla.bs/delegates) here.
+
+```javascript
+logos.changeServer(`http://${delegateList[delegateId]}:55000`)
 ```
 
 
@@ -162,6 +198,7 @@ Allows you to generate and validate Proof of Work for a given block hash.
 
 * `logos.available()`
 * `logos.deterministicKey(seed: string, index?: string | number)`
+* `logos.changeServer(nodeURL: string, proxyURL?: string)`
 
 ## Calling RPC directly
 
