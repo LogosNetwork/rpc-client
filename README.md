@@ -11,7 +11,7 @@ Promise-based client for interacting and building services on top of the Logos n
 
 ## Install
 
-`npm install logos-rpc-client`
+`npm i @logosnetwork/logos-rpc-client`
 
 ### Your own Logos Node
 
