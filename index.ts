@@ -52,7 +52,7 @@ export interface LogosConstructorOptions {
   rpcClient?: RPCClient
   debug?: boolean
 }
-type Denomination = 'reason' | 'LOGOS' | 'pathos' | 'ethos'
+export type Denomination = 'reason' | 'LOGOS' | 'pathos' | 'ethos'
 export class Logos {
   rpc = createAPI<API>(null)
   debug: boolean
