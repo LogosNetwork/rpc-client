@@ -52,7 +52,7 @@ export interface LogosConstructorOptions {
   rpcClient?: RPCClient
   debug?: boolean
 }
-
+type Denomination = 'reason' | 'LOGOS' | 'pathos' | 'ethos'
 export class Logos {
   rpc = createAPI<API>(null)
   debug: boolean
@@ -92,8 +92,10 @@ export class Logos {
     const {address} = accountPair(private_key)
 
     return {
-      send: (amount: string | number, address: string, transactionFee = minimumTransactionFee) => {
-        return this.send(private_key, amount, address, transactionFee)
+      send: (amount: string | number, toAddress: string,
+         frontier: string, denomination: Denomination = 'LOGOS',
+         work = '0000000000000000', transactionFee = minimumTransactionFee) => {
+        return this.send(private_key, amount, toAddress, frontier, denomination, work, transactionFee)
       },
       reasonBalance: () => {
         return this.accounts.reasonBalance(address)
@@ -117,14 +119,25 @@ export class Logos {
   }
 
   //Top-level call: send block
-  async send(privateKey: string, amount: string | number, toAddress: string, transactionFee = minimumTransactionFee) {
+  async send(privateKey: string, amount: string | number, toAddress: string,
+    frontier: string, denomination: Denomination = 'LOGOS',
+    work = '0000000000000000', transactionFee = minimumTransactionFee) {
     const {_log} = this
     if (!privateKey) {
       throw new Error('Must pass private_key argument')
     }
-
-    const {frontier, work} = await this.generateLatestWork(privateKey)
-    const amountReason = Converter.unit(amount, 'LOGOS', 'reason')
+    
+    if (!work || !frontier) {
+      const val = await this.generateLatestWork(privateKey)
+      work = val.work
+      frontier = val.frontier
+    }
+    let amountReason
+    if (denomination === 'LOGOS') {
+      amountReason = Converter.unit(amount, 'LOGOS', 'reason')
+    } else {
+      amountReason = amount.toString()
+    }
 
     const block = await this.transactions.createSend({
       key: privateKey,
@@ -282,7 +295,6 @@ export class Logos {
   }
 
   get convert() {
-    type Denomination = 'pathos' | 'ethos' | 'LOGOS'
     return {
       toReason(amount: string | number, denomination: Denomination) {
         return Converter.unit(amount, denomination, 'reason')
