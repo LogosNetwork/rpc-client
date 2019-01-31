@@ -37,7 +37,9 @@ export interface API extends APIBase {
   account_history: {
     body: {
       account: string //target wallet
-      count?: number //return limit
+      count?: number //return limit,
+      details?: boolean
+      head?: string
     }
     response: {
       history: TransactionHistory[]

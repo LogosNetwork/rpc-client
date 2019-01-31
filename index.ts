@@ -186,10 +186,12 @@ export class Logos {
       blockCount(account: string) {
         return rpc('account_block_count', {account})
       },
-      history(account: string, count?: number) {
+      history(account: string, count?: number, details?: boolean, head?: string) {
         return rpc('account_history', {
           account,
-          count: count || 1000
+          count: count || 1000,
+          raw: details || false,
+          head: head
         }).then(res => res.history)
       },
       info(account: string) {
