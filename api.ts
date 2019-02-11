@@ -42,22 +42,23 @@ export interface API extends APIBase {
       head?: string
     }
     response: {
-      history: TransactionHistory[]
+      history: TransactionRequest[]
     }
   }
 
   account_info: {
     body: {
-      account: string, //target wallet
+      account: string //target wallet
       logos: null
     }
     response: {
-      frontier: string
-      open_block: string
-      representative_block: string
       balance: string
-      modified_timestamp: string
       block_count: string
+      frontier: string
+      modified_timestamp: string
+      open_block: string
+      receive_tip: string
+      representative_block: string
     }
   }
 
@@ -226,12 +227,12 @@ export interface API extends APIBase {
       hash: string
       count: number
     }
-    response: TransactionHistory[]
+    response: TransactionRequest[]
   }
 
   process: {
     body: {
-      block: string,
+      block: string
       logos: null
     }
     response: {
@@ -260,12 +261,18 @@ export interface API extends APIBase {
 }
 
 export type BatchBlock = {
-  type: string
+  delegate: string
+  epoch_number: string
+  sequence: string
+  timestamp: string
   previous: string
-  hash: string
-  block_count: string
   signature: string
-  blocks: [TransactionRequest]
+  type: string
+  blocks_count: string
+  blocks: TransactionRequest[]
+  paricipation_map: string
+  next: string
+  hash: string
 }
 
 export type Epoch = {
@@ -274,7 +281,7 @@ export type Epoch = {
   micro_block_tip: string
   transaction_fee_pool: string
   signature: string
-  delegates: [delegate]
+  delegates: delegate[]
 }
 
 export type MicroEpoch = {
@@ -285,31 +292,34 @@ export type MicroEpoch = {
   epoch_number: string
   micro_block_number: string
   last_micro_block: string
-  tips: [string]
+  tips: string[]
   number_batch_blocks: string
   signature: string
 }
 
 export type TransactionRequest = {
-  type: string
   account: string
-  representative: string
-  source: string
-  work: string
+  previous: string
+  sequence: string
+  transcation_type: string
+  transcation_fee: string
   signature: string
+  number_transactions: string
+  transactions: MultiSendRequest[]
+  hash: string
+  batch_hash: string
+  index_in_batch: string 
+}
+
+export type MultiSendRequest = {
+  target: string
+  amount: string
 }
 
 export type delegate = {
   account: string
   vote: string
   stake: string
-}
-
-export type TransactionHistory = {
-  type: string
-  account: string
-  hash: string
-  amount: string
 }
 
 export type SendBlock = {
