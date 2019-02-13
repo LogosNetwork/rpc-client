@@ -1,5 +1,5 @@
 import axios from 'axios'
-const {accountPair, sign, sendHash} = require('./util/util.js')
+const {accountPair, sign, sendHash, keyFromAccount} = require('./util/util.js')
 import Converter from './util/converter'
 
 import {
@@ -119,20 +119,27 @@ export class Logos {
   }
 
   //Top-level call: send block
-  async send(privateKey: string, transactions: MultiSendRequest[],
+  async createSend(privateKey: string, transactions: MultiSendRequest[],
     previous: string, sequence: string,
     denomination: Denomination = 'reason',
     work: string = '0000000000000000',
     transactionFee: string = minimumTransactionFee) {
-    const {_log} = this
     if (!privateKey) throw new Error('Must pass private_key argument')
+    if (!transactions || transactions.length < 1 || transactions.length > 8) throw new Error('Must pass transactions with a length of 1-8')
     const {address} = accountPair(privateKey)
     if (!previous) {
       const {frontier} = await this.accounts.info(address)
       previous = frontier
     }
+    if (sequence === null) {
+      if (previous === '0000000000000000000000000000000000000000000000000000000000000000') {
+        sequence = '0'
+      } else {
+        let history = await this.accounts.history(address, 1)
+        sequence = (parseInt(history[0].sequence) + 1).toString()
+      }
+    }
     if (work === null) work = await this.generateLatestWork(privateKey, previous)
-    
     for (let transaction of transactions) {
       if (denomination === 'LOGOS') {
         transaction.amount = Converter.unit(transaction.amount, 'LOGOS', 'reason')
@@ -161,12 +168,8 @@ export class Logos {
       work: work,
       signature: signature
     }
-    _log(`Publishing Transactions: ${JSON.stringify(sendBlock)}`)
 
-    // Send JSON
-    const result = await this.transactions.publish(JSON.stringify(sendBlock))
-    _log(`Published Transaction: ${result}!`)
-    return result 
+    return sendBlock
   }
 
   async generateLatestWork(privateKey: string, previous: string = null) {
@@ -217,7 +220,7 @@ export class Logos {
         })
       },
       key(account: string) {
-        return rpc('account_to_key', {account})
+        return keyFromAccount(account)
       }
     }
   }
@@ -244,11 +247,12 @@ export class Logos {
           return res
         })
       },
-      publishSend: (privateKey: string, transactions: MultiSendRequest[],
-        previous: string, sequence: string,
+      createSend: (privateKey: string, transactions: MultiSendRequest[],
+        previous: string = null, sequence: string | number = null,
         denomination: Denomination = 'LOGOS', work = '0000000000000000',
         transactionFee: string = minimumTransactionFee) => {
-        return this.send(privateKey, transactions, previous, sequence, denomination, work, transactionFee)
+          sequence = sequence.toString()
+          return this.createSend(privateKey, transactions, previous, sequence, denomination, work, transactionFee)
       }
     }
   }
@@ -296,7 +300,7 @@ export class Logos {
       history(count: string | number, delegateIndex: string | number, hash: string) {
         return rpc('batch_blocks_latest', {
           count: count || 1000,
-          delegate_id: delegateIndex || "0",
+          delegate_id: delegateIndex || '0',
           head: hash
         }).then(res => res)
       },

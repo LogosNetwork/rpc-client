@@ -186,7 +186,7 @@ function keyFromAccount(account) {
     var key_array = uint4_uint8(key_uint4)
     var blake_hash = blake2b(key_array, null, 5).reverse()
     if (equal_arrays(hash_uint4, uint8_uint4(blake_hash))) {
-      var key = uint4_hex(key_uint4)
+      var key = uint4_hex(key_uint4).toUpperCase()
       return key
     } else throw new Error('invalid_checksum')
   }
