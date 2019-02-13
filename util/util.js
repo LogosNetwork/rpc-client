@@ -120,6 +120,42 @@ function uint8_hex(uint8) {
   return hex
 }
 
+function changeEndianness(string) {
+  const result = []
+  let len = string.length - 2
+  while (len >= 0) {
+    result.push(string.substr(len, 2))
+    len -= 2
+  }
+  return result.join('')
+}
+
+function dec_hex(str, bytes = null) {
+  let dec = str.toString().split('')
+  let sum = []
+  let hex = []
+  let i
+  let s
+  while (dec.length) {
+    s = 1 * dec.shift()
+    for (i = 0; s || i < sum.length; i++) {
+      s += (sum[i] || 0) * 10
+      sum[i] = s % 16
+      s = (s - sum[i]) / 16
+    }
+  }
+  while (sum.length) {
+    hex.push(sum.pop().toString(16))
+  }
+  hex = hex.join('')
+  if (hex.length % 2 !== 0) hex = '0' + hex
+  if (bytes > hex.length / 2) {
+    let diff = bytes - hex.length / 2
+    for (let i = 0; i < diff; i++) hex = '00' + hex
+  }
+  return hex
+}
+
 function uint4_hex(uint4) {
   var hex = ''
   for (let i = 0; i < uint4.length; i++) hex += uint4[i].toString(16)
@@ -140,7 +176,7 @@ function array_crop(array) {
   return cropped_array
 }
 
-exports.keyFromAccount = function(account) {
+function keyFromAccount(account) {
   if (/^lgs_[13][13456789abcdefghijkmnopqrstuwxyz]{59}$/.test(account)) {
     var account_crop = account.substring(4, 64)
     var key_uint4 = array_crop(
@@ -156,6 +192,39 @@ exports.keyFromAccount = function(account) {
   }
   throw new Error('invalid_account')
 }
+
+exports.sendHash = function(account, transactions, previous, sequence, transactionFee) {
+  if (!previous) throw new Error('Previous is not set.')
+  if (!transactions) throw new Error('Transactions are not set.')
+  if (!sequence) throw new Error('Sequence is not set.')
+  if (!transactionFee) throw new Error('Transaction fee is not set.')
+  if (!account) throw new Error('Account is not set.')
+  const context = blake2bInit(32, null)
+  blake2bUpdate(context, hex_uint8(keyFromAccount(account)))
+  blake2bUpdate(context, hex_uint8(previous))
+  blake2bUpdate(context, hex_uint8(changeEndianness(dec_hex(sequence, 4))))
+  blake2bUpdate(context, hex_uint8(dec_hex(0, 1)))
+  blake2bUpdate(context, hex_uint8(changeEndianness(dec_hex(transactions.length, 2))))
+  for (let transaction of transactions) {
+    blake2bUpdate(context, hex_uint8(keyFromAccount(transaction.target)))
+    blake2bUpdate(context, hex_uint8(dec_hex(transaction.amount, 16)))
+  }
+  blake2bUpdate(context, hex_uint8(dec_hex(transactionFee, 16)))
+  return uint8_hex(blake2bFinal(context))
+}
+
+exports.sign = function(privateKey, hash, address) {
+  privateKey = hex_uint8(privateKey)
+  if (privateKey.length !== 32) throw new Error('Invalid Private Key length. Should be 32 bytes.')
+  hash = hex_uint8(hash)
+  signature = uint8_hex(nacl.sign.detached(hash, privateKey))
+  if (!nacl.sign.detached.verify(hex_uint8(hash), hex_uint8(signature), hex_uint8(keyFromAccount(address)))) {
+    throw new Error('Invalid Signature Generated')
+  }
+  return signature
+}
+
+exports.keyFromAccount = keyFromAccount
 
 exports.accountFromKey = function(hex) {
   var checksum = ''

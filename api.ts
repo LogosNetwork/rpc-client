@@ -127,22 +127,6 @@ export interface API extends APIBase {
     }
   }
 
-  block_create: {
-    body: {
-      type: 'state',
-      key: string //send: PRIVATE KEY for logos wallet to 'sign' the block
-      previous?: string
-      work: string
-      transaction_fee?: string // Transaction fee for the transaction fee minimum
-      destination?: string //send: destination logos wallet
-      amount?: string
-    }
-    response: {
-      hash: string
-      block: string
-    }
-  }
-
   deterministic_key: {
     body: {
       seed: string
@@ -320,15 +304,6 @@ export type delegate = {
   account: string
   vote: string
   stake: string
-}
-
-export type SendBlock = {
-  key: string
-  destination: string
-  amount: string
-  previous: string
-  transaction_fee: string
-  work: string
 }
 
 export type AccountInfo = {

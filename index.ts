@@ -1,11 +1,10 @@
 import axios from 'axios'
-const {accountPair} = require('./util/util.js')
+const {accountPair, sign, sendHash} = require('./util/util.js')
 import Converter from './util/converter'
 
 import {
   API,
-  APIBase,
-  SendBlock
+  APIBase
 } from './api'
 
 //TODO Change this representative to something signifigant.
@@ -52,7 +51,13 @@ export interface LogosConstructorOptions {
   rpcClient?: RPCClient
   debug?: boolean
 }
-export type Denomination = 'reason' | 'LOGOS' | 'pathos' | 'ethos'
+export type Denomination = 'reason' | 'LOGOS'
+
+export type MultiSendRequest = {
+  target: string
+  amount: string
+}
+
 export class Logos {
   rpc = createAPI<API>(null)
   debug: boolean
@@ -92,11 +97,6 @@ export class Logos {
     const {address} = accountPair(private_key)
 
     return {
-      send: (amount: string | number, toAddress: string,
-         frontier: string, denomination: Denomination = 'LOGOS',
-         work = '0000000000000000', transactionFee = minimumTransactionFee) => {
-        return this.send(private_key, amount, toAddress, frontier, denomination, work, transactionFee)
-      },
       reasonBalance: () => {
         return this.accounts.reasonBalance(address)
       },
@@ -119,50 +119,65 @@ export class Logos {
   }
 
   //Top-level call: send block
-  async send(privateKey: string, amount: string | number, toAddress: string,
-    frontier: string, denomination: Denomination = 'LOGOS',
-    work = '0000000000000000', transactionFee = minimumTransactionFee) {
+  async send(privateKey: string, transactions: MultiSendRequest[],
+    previous: string, sequence: string,
+    denomination: Denomination = 'reason',
+    work: string = '0000000000000000',
+    transactionFee: string = minimumTransactionFee) {
     const {_log} = this
-    if (!privateKey) {
-      throw new Error('Must pass private_key argument')
+    if (!privateKey) throw new Error('Must pass private_key argument')
+    const {address} = accountPair(privateKey)
+    if (!previous) {
+      const {frontier} = await this.accounts.info(address)
+      previous = frontier
     }
+    if (work === null) work = await this.generateLatestWork(privateKey, previous)
     
-    if (!work || !frontier) {
-      const val = await this.generateLatestWork(privateKey)
-      work = val.work
-      frontier = val.frontier
-    }
-    let amountReason
-    if (denomination === 'LOGOS') {
-      amountReason = Converter.unit(amount, 'LOGOS', 'reason')
-    } else {
-      amountReason = amount.toString()
+    for (let transaction of transactions) {
+      if (denomination === 'LOGOS') {
+        transaction.amount = Converter.unit(transaction.amount, 'LOGOS', 'reason')
+      } else if (denomination === 'reason') {
+        transaction.amount = transaction.amount.toString()
+      } else {
+        throw new Error('Unknown Denomination: Please use LOGOS or reason')
+      }
     }
 
-    const block = await this.transactions.createSend({
-      key: privateKey,
-      destination: toAddress,
-      amount: amountReason,
-      previous: frontier,
+    // Create Hash
+    let hash = sendHash(address, transactions, previous, sequence, transactionFee)
+
+    // Create Signature
+    let signature = sign(privateKey, hash, address)
+
+    let sendBlock = {
+      previous: previous,
+      sequence: sequence,
+      transaction_type: 'send',
+      account: address,
       transaction_fee: transactionFee,
-      work
-    })
+      transactions: transactions,
+      number_transactions: transactions.length,
+      hash: hash,
+      work: work,
+      signature: signature
+    }
+    _log(`Publishing Transactions: ${JSON.stringify(sendBlock)}`)
 
-    const result = await this.transactions.publish(block.block)
-    _log(`Sent ${amountReason} reason to ${toAddress}!`)
+    // Send JSON
+    const result = await this.transactions.publish(JSON.stringify(sendBlock))
+    _log(`Published Transaction: ${result}!`)
     return result 
   }
 
-  async generateLatestWork(privateKey: string) {
+  async generateLatestWork(privateKey: string, previous: string = null) {
     const {address} = accountPair(privateKey)
-    const {frontier} = await this.accounts.info(address)
-    const {work} = await this.work.generate(frontier)
-
-    return {
-      address,
-      frontier,
-      work
+    if (previous === null) {
+      const {frontier} = await this.accounts.info(address)
+      previous = frontier
     }
+    const {work} = await this.work.generate(previous)
+
+    return work
   }
 
   //General account methods
@@ -229,14 +244,11 @@ export class Logos {
           return res
         })
       },
-      createSend(block: SendBlock) {
-        return rpc('block_create', {
-          type: 'state',
-          ...block
-        }).then(res => {
-          _log(`(BLOCK) Sending ${block.amount} to ${block.destination}`)
-          return res
-        })
+      publishSend: (privateKey: string, transactions: MultiSendRequest[],
+        previous: string, sequence: string,
+        denomination: Denomination = 'LOGOS', work = '0000000000000000',
+        transactionFee: string = minimumTransactionFee) => {
+        return this.send(privateKey, transactions, previous, sequence, denomination, work, transactionFee)
       }
     }
   }

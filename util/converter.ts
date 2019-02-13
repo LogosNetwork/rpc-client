@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 
-type LogosUnit = 'reason' | 'LOGOS' | 'pathos' | 'ethos'
+type LogosUnit = 'reason' | 'LOGOS'
 
 const Converter = {
   unit(input: string | number, input_unit: LogosUnit, output_unit: LogosUnit) {
@@ -14,12 +14,6 @@ const Converter = {
       case 'LOGOS':
         value = value.shiftedBy(30)
         break
-      case 'pathos':
-        value = value.shiftedBy(27)
-        break
-      case 'ethos':
-        value = value.shiftedBy(24)
-        break
       default:
         throw new Error(`Unkown input unit ${input_unit}`)
     }
@@ -30,10 +24,6 @@ const Converter = {
         return value.toFixed(0)
       case 'LOGOS':
         return value.shiftedBy(-30).toFixed(15, 1)
-      case 'pathos':
-        return value.shiftedBy(-27).toFixed(12, 1)
-      case 'ethos':
-        return value.shiftedBy(-24).toFixed(9, 1)
       default:
         throw new Error(`Unknown output unit ${output_unit}`)
     }
