@@ -120,7 +120,7 @@ export class Logos {
 
   //Top-level call: send block
   async createSend(privateKey: string, transactions: MultiSendRequest[],
-    previous: string, sequence: string,
+    previous: string, sequence: string | number,
     denomination: Denomination = 'reason',
     work: string = '0000000000000000',
     transactionFee: string = minimumTransactionFee) {
@@ -251,7 +251,7 @@ export class Logos {
         previous: string = null, sequence: string | number = null,
         denomination: Denomination = 'LOGOS', work = '0000000000000000',
         transactionFee: string = minimumTransactionFee) => {
-          sequence = sequence.toString()
+          if (sequence !== null) sequence = sequence.toString()
           return this.createSend(privateKey, transactions, previous, sequence, denomination, work, transactionFee)
       }
     }

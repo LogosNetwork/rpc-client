@@ -218,7 +218,7 @@ exports.sign = function(privateKey, hash, address) {
   if (privateKey.length !== 32) throw new Error('Invalid Private Key length. Should be 32 bytes.')
   hash = hex_uint8(hash)
   signature = uint8_hex(nacl.sign.detached(hash, privateKey))
-  if (!nacl.sign.detached.verify(hex_uint8(hash), hex_uint8(signature), hex_uint8(keyFromAccount(address)))) {
+  if (!nacl.sign.detached.verify(hash, hex_uint8(signature), hex_uint8(keyFromAccount(address)))) {
     throw new Error('Invalid Signature Generated')
   }
   return signature
