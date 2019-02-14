@@ -135,8 +135,8 @@ export class Logos {
       if (previous === '0000000000000000000000000000000000000000000000000000000000000000') {
         sequence = '0'
       } else {
-        let history = await this.accounts.history(address, 1)
-        sequence = (parseInt(history[0].sequence) + 1).toString()
+        let prevBlock = await this.transactions.info(previous)
+        sequence = (parseInt(prevBlock.sequence) + 1).toString()
       }
     }
     if (work === null) work = await this.generateLatestWork(privateKey, previous)
@@ -227,19 +227,12 @@ export class Logos {
 
   get transactions() {
     const {rpc, _log} = this
-
+    
     return {
-      info(hashOrHashes: string | string[]) {
-        const getMulti = (typeof hashOrHashes as string | string[]) === 'array'
-        if (getMulti) {
-          return rpc('blocks', {
-            hashes: hashOrHashes as string[]
-          }).then(res => res.blocks)
-        } else {
-          return rpc('block', {
-            hash: hashOrHashes as string
-          }).then(res => res)
-        }
+      info(hash: string) {
+        return rpc('block', {
+          hash: hash
+        }).then(res => res)
       },
       publish(block: string) {
         return rpc('process', {block: block, logos: null}).then(res => {

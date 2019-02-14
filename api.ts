@@ -103,9 +103,7 @@ export interface API extends APIBase {
     body: {
       hash: string
     }
-    response: {
-      contents: TransactionRequest
-    }
+    response: TransactionRequest
   }
 
   blocks: {
@@ -113,9 +111,7 @@ export interface API extends APIBase {
       hashes: string[]
     }
     response: {
-      blocks: {
-        [account: string]: TransactionRequest
-      }
+      blocks: TransactionRequest[]
     }
   }
 
