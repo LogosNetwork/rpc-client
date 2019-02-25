@@ -15,10 +15,10 @@ export const minimumTransactionFee = '10000000000000000000000'
 export type RPCClient = (params: any) => Promise<any>
 function createAPI<API extends APIBase = any>(rpcClient: RPCClient) {
   return async function callRPC<Action extends keyof API>(
-    action: Action,
+    rpc_action: Action,
     body?: API[Action]['body']
   ): Promise<API[Action]['response']> {
-    const params = Object.assign({}, body || {}, {action})
+    const params = Object.assign({}, body || {}, {rpc_action})
     return rpcClient(params)
   }
 }
