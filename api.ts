@@ -292,7 +292,7 @@ export type TransactionRequest = {
 }
 
 export type MultiSendRequest = {
-  target: string
+  destination: string
   amount: string
 }
 

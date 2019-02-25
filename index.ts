@@ -54,7 +54,7 @@ export interface LogosConstructorOptions {
 export type Denomination = 'reason' | 'LOGOS'
 
 export type MultiSendRequest = {
-  target: string
+  destination: string
   amount: string
 }
 
@@ -160,7 +160,7 @@ export class Logos {
       previous: previous,
       sequence: sequence,
       transaction_type: 'send',
-      account: address,
+      origin: address,
       transaction_fee: transactionFee,
       transactions: transactions,
       number_transactions: transactions.length,

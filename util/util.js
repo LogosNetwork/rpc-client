@@ -193,12 +193,12 @@ function keyFromAccount(account) {
   throw new Error('invalid_account')
 }
 
-exports.sendHash = function(account, transactions, previous, sequence, transactionFee) {
+exports.sendHash = function(origin, transactions, previous, sequence, transactionFee) {
   if (!previous) throw new Error('Previous is not set.')
   if (!transactions) throw new Error('Transactions are not set.')
   if (!sequence) throw new Error('Sequence is not set.')
   if (!transactionFee) throw new Error('Transaction fee is not set.')
-  if (!account) throw new Error('Account is not set.')
+  if (!origin) throw new Error('Origin account is not set.')
   const context = blake2bInit(32, null)
   blake2bUpdate(context, hex_uint8(keyFromAccount(account)))
   blake2bUpdate(context, hex_uint8(previous))
@@ -206,7 +206,7 @@ exports.sendHash = function(account, transactions, previous, sequence, transacti
   blake2bUpdate(context, hex_uint8(dec_hex(0, 1)))
   blake2bUpdate(context, hex_uint8(changeEndianness(dec_hex(transactions.length, 2))))
   for (let transaction of transactions) {
-    blake2bUpdate(context, hex_uint8(keyFromAccount(transaction.target)))
+    blake2bUpdate(context, hex_uint8(keyFromAccount(transaction.destination)))
     blake2bUpdate(context, hex_uint8(dec_hex(transaction.amount, 16)))
   }
   blake2bUpdate(context, hex_uint8(dec_hex(transactionFee, 16)))
