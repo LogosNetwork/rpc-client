@@ -49,7 +49,6 @@ export interface API extends APIBase {
   account_info: {
     body: {
       account: string //target wallet
-      logos: null
     }
     response: {
       balance: string
@@ -212,8 +211,7 @@ export interface API extends APIBase {
 
   process: {
     body: {
-      block: string
-      logos: null
+      request: string
     }
     response: {
       hash: string

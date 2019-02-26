@@ -213,7 +213,7 @@ export class Logos {
         }).then(res => res.history)
       },
       info(account: string) {
-        return rpc('account_info', {account: account, logos: null}).then(account => {
+        return rpc('account_info', {account: account}).then(account => {
           _log(`(ACCOUNT) balance: ${account.balance}`)
           _log(`(ACCOUNT) latest hash: ${account.frontier}`)
           return account
@@ -234,8 +234,8 @@ export class Logos {
           hash: hash
         }).then(res => res)
       },
-      publish(block: string) {
-        return rpc('process', {block: block, logos: null}).then(res => {
+      publish(request: string) {
+        return rpc('process', {request: request}).then(res => {
           _log(`(BLOCK) Published: ${res.hash}`)
           return res
         })
