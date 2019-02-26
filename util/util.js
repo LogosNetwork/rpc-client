@@ -200,16 +200,15 @@ exports.sendHash = function(origin, transactions, previous, sequence, transactio
   if (!transactionFee) throw new Error('Transaction fee is not set.')
   if (!origin) throw new Error('Origin account is not set.')
   const context = blake2bInit(32, null)
-  blake2bUpdate(context, hex_uint8(keyFromAccount(origin)))
-  blake2bUpdate(context, hex_uint8(previous))
-  blake2bUpdate(context, hex_uint8(changeEndianness(dec_hex(sequence, 4))))
   blake2bUpdate(context, hex_uint8(dec_hex(0, 1)))
-  blake2bUpdate(context, hex_uint8(changeEndianness(dec_hex(transactions.length, 2))))
+  blake2bUpdate(context, hex_uint8(previous))
+  blake2bUpdate(context, hex_uint8(keyFromAccount(origin)))
+  blake2bUpdate(context, hex_uint8(dec_hex(transactionFee, 16)))
+  blake2bUpdate(context, hex_uint8(changeEndianness(dec_hex(sequence, 4))))
   for (let transaction of transactions) {
     blake2bUpdate(context, hex_uint8(keyFromAccount(transaction.destination)))
     blake2bUpdate(context, hex_uint8(dec_hex(transaction.amount, 16)))
   }
-  blake2bUpdate(context, hex_uint8(dec_hex(transactionFee, 16)))
   return uint8_hex(blake2bFinal(context))
 }
 

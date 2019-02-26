@@ -135,8 +135,8 @@ export class Logos {
       if (previous === '0000000000000000000000000000000000000000000000000000000000000000') {
         sequence = '0'
       } else {
-        let prevBlock = await this.transactions.info(previous)
-        sequence = (parseInt(prevBlock.sequence) + 1).toString()
+        let previousRequest = await this.transactions.info(previous)
+        sequence = (parseInt(previousRequest.sequence) + 1).toString()
       }
     }
     if (work === null) work = await this.generateLatestWork(privateKey, previous)
@@ -156,20 +156,21 @@ export class Logos {
     // Create Signature
     let signature = sign(privateKey, hash, address)
 
-    let sendBlock = {
+    let sendRequest = {
       previous: previous,
       sequence: sequence,
-      transaction_type: 'send',
+      type: 'send',
       origin: address,
-      transaction_fee: transactionFee,
+      fee: transactionFee,
       transactions: transactions,
       number_transactions: transactions.length,
       hash: hash,
+      next: '0000000000000000000000000000000000000000000000000000000000000000',
       work: work,
       signature: signature
     }
 
-    return sendBlock
+    return sendRequest
   }
 
   async generateLatestWork(privateKey: string, previous: string = null) {
@@ -236,7 +237,7 @@ export class Logos {
       },
       publish(request: string) {
         return rpc('process', {request: request}).then(res => {
-          _log(`(BLOCK) Published: ${res.hash}`)
+          _log(`(REQUEST) Published: ${res.hash}`)
           return res
         })
       },
