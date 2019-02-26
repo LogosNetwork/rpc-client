@@ -42,7 +42,7 @@ export interface API extends APIBase {
       head?: string
     }
     response: {
-      history: TransactionRequest[]
+      history: Request[]
     }
   }
 
@@ -102,7 +102,7 @@ export interface API extends APIBase {
     body: {
       hash: string
     }
-    response: TransactionRequest
+    response: Request
   }
 
   blocks: {
@@ -110,7 +110,7 @@ export interface API extends APIBase {
       hashes: string[]
     }
     response: {
-      blocks: TransactionRequest[]
+      blocks: Request[]
     }
   }
 
@@ -176,7 +176,7 @@ export interface API extends APIBase {
       hashes: string[]
     }
     response: {
-      blocks: BatchBlock[]
+      blocks: RequestBlock[]
     }
   }
 
@@ -187,7 +187,7 @@ export interface API extends APIBase {
       hash?: string //starting hash
     }
     response: {
-      history: BatchBlock[]
+      history: RequestBlock[]
     }
   }
 
@@ -206,7 +206,7 @@ export interface API extends APIBase {
       hash: string
       count: number
     }
-    response: TransactionRequest[]
+    response: Request[]
   }
 
   process: {
@@ -238,7 +238,7 @@ export interface API extends APIBase {
   }
 }
 
-export type BatchBlock = {
+export type RequestBlock = {
   delegate: string
   epoch_number: string
   sequence: string
@@ -246,8 +246,8 @@ export type BatchBlock = {
   previous: string
   signature: string
   type: string
-  blocks_count: string
-  blocks: TransactionRequest[]
+  request_count: string
+  requests: Request[]
   paricipation_map: string
   next: string
   hash: string
@@ -275,18 +275,18 @@ export type MicroEpoch = {
   signature: string
 }
 
-export type TransactionRequest = {
-  account: string
-  previous: string
-  sequence: string
-  transcation_type: string
-  transcation_fee: string
+export type Request = {
+  type: string
+  origin: string
   signature: string
+  previous: string
+  next: string
+  fee: string
+  sequence: string
+  work: string
   number_transactions: string
   transactions: MultiSendRequest[]
   hash: string
-  batch_hash: string
-  index_in_batch: string 
 }
 
 export type MultiSendRequest = {

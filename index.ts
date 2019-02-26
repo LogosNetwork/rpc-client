@@ -10,7 +10,7 @@ import {
 //TODO Change this representative to something signifigant.
 export const LogosRepresentative =
   'lgs_3rropjiqfxpmrrkooej4qtmm1pueu36f9ghinpho4esfdor8785a455d16nf'
-export const minimumTransactionFee = '10000000000000000000000'
+export const minimumFee = '10000000000000000000000'
 
 export type RPCClient = (params: any) => Promise<any>
 function createAPI<API extends APIBase = any>(rpcClient: RPCClient) {
@@ -123,7 +123,7 @@ export class Logos {
     previous: string, sequence: string | number,
     denomination: Denomination = 'reason',
     work: string = '0000000000000000',
-    transactionFee: string = minimumTransactionFee) {
+    fee: string = minimumFee) {
     if (!privateKey) throw new Error('Must pass private_key argument')
     if (!transactions || transactions.length < 1 || transactions.length > 8) throw new Error('Must pass transactions with a length of 1-8')
     const {address} = accountPair(privateKey)
@@ -135,7 +135,7 @@ export class Logos {
       if (previous === '0000000000000000000000000000000000000000000000000000000000000000') {
         sequence = '0'
       } else {
-        let previousRequest = await this.transactions.info(previous)
+        let previousRequest = await this.requests.info(previous)
         sequence = (parseInt(previousRequest.sequence) + 1).toString()
       }
     }
@@ -151,7 +151,7 @@ export class Logos {
     }
 
     // Create Hash
-    let hash = sendHash(address, transactions, previous, sequence, transactionFee)
+    let hash = sendHash(address, transactions, previous, sequence, fee)
 
     // Create Signature
     let signature = sign(privateKey, hash, address)
@@ -161,7 +161,7 @@ export class Logos {
       sequence: sequence,
       type: 'send',
       origin: address,
-      fee: transactionFee,
+      fee: fee,
       transactions: transactions,
       number_transactions: transactions.length,
       hash: hash,
@@ -226,7 +226,7 @@ export class Logos {
     }
   }
 
-  get transactions() {
+  get requests() {
     const {rpc, _log} = this
     
     return {
@@ -244,9 +244,9 @@ export class Logos {
       createSend: (privateKey: string, transactions: MultiSendRequest[],
         previous: string = null, sequence: string | number = null,
         denomination: Denomination = 'LOGOS', work = '0000000000000000',
-        transactionFee: string = minimumTransactionFee) => {
+        fee: string = minimumFee) => {
           if (sequence !== null) sequence = sequence.toString()
-          return this.createSend(privateKey, transactions, previous, sequence, denomination, work, transactionFee)
+          return this.createSend(privateKey, transactions, previous, sequence, denomination, work, fee)
       }
     }
   }
@@ -287,7 +287,7 @@ export class Logos {
     }
   }
 
-  get batchBlocks() {
+  get requestBlocks() {
     const {rpc} = this
 
     return {
