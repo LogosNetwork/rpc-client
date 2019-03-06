@@ -17,7 +17,7 @@ const Converter = {
       default:
         let input = parseInt(input_unit.toString())
         if (!isNaN(input)) {
-          return value.times('1e'+input)
+          value.times('1e'+input)
         } else {
           throw new Error(`Unkown input unit ${input_unit}`)
         }
