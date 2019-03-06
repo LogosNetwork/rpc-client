@@ -313,6 +313,9 @@ export class Logos {
       },
       fromReason(amount: string, denomination: Denomination) {
         return Converter.unit(amount, 'reason', denomination)
+      },
+      fromTo(amount: string, currentDec: number, preferedDec: number) {
+        return Converter.unit(amount, currentDec, preferedDec)
       }
     }
   }

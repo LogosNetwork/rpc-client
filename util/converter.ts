@@ -1,10 +1,10 @@
-import BigNumber from 'bignumber.js'
+const bigInt = require('big-integer')
 
 type LogosUnit = 'reason' | 'LOGOS'
 
 const Converter = {
-  unit(input: string | number, input_unit: LogosUnit, output_unit: LogosUnit) {
-    let value = new BigNumber(input.toString())
+  unit(input: string | number, input_unit: LogosUnit | number, output_unit: LogosUnit | number) {
+    let value = new bigInt(input)
 
     // Step 1: to reason
     switch (input_unit) {
@@ -12,10 +12,14 @@ const Converter = {
         value = value
         break
       case 'LOGOS':
-        value = value.shiftedBy(30)
+        value = value.times('1e'+30)
         break
       default:
-        throw new Error(`Unkown input unit ${input_unit}`)
+        if (Number.isInteger(input_unit)) {
+          value = value.times('1e'+input_unit)
+        } else {
+          throw new Error(`Unkown input unit ${input_unit}`)
+        }
     }
 
     // Step 2: to output
@@ -23,16 +27,20 @@ const Converter = {
       case 'reason':
         return value.toFixed(0)
       case 'LOGOS':
-        return value.shiftedBy(-30).toFixed(15, 1)
+        return value.times('1e'+-30).toFixed(15, 1)
       default:
-        throw new Error(`Unknown output unit ${output_unit}`)
+        if (Number.isInteger(output_unit)) {
+          value = value.times('1e'+-output_unit).toFixed(15, 1)
+        } else {
+          throw new Error(`Unknown output unit ${output_unit}`)
+        }
     }
   },
   minus(base: string, minus: string) {
-    new BigNumber(base).minus(new BigNumber(minus)).toFixed(0)
+    new bigInt(base).minus(new bigInt(minus)).toFixed(0)
   },
   plus(base: string, plus: string) {
-    new BigNumber(base).plus(new BigNumber(plus)).toFixed(0)
+    new bigInt(base).plus(new bigInt(plus)).toFixed(0)
   }
 }
 
