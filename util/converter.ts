@@ -26,23 +26,23 @@ const Converter = {
     // Step 2: to output
     switch (output_unit) {
       case 'reason':
-        return value.toFixed(0)
+        return value.toString()
       case 'LOGOS':
-        return value.times(bigInt(10).pow(-30)).toFixed(15, 1)
+        return value.divide(bigInt(10).pow(30)).toString()
       default:
         let output = parseInt(output_unit.toString())
         if (!isNaN(output)) {
-          value = value.times(bigInt(10).pow(-output)).toFixed(15, 1)
+          value = value.divide(bigInt(10).pow(output)).toString()
         } else {
           throw new Error(`Unknown output unit ${output_unit}`)
         }
     }
   },
   minus(base: string, minus: string) {
-    new bigInt(base).minus(new bigInt(minus)).toFixed(0)
+    new bigInt(base).minus(new bigInt(minus)).toString()
   },
   plus(base: string, plus: string) {
-    new bigInt(base).plus(new bigInt(plus)).toFixed(0)
+    new bigInt(base).plus(new bigInt(plus)).toString()
   }
 }
 
