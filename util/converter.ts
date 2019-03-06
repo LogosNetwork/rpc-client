@@ -17,7 +17,7 @@ const Converter = {
       default:
         let input = parseInt(input_unit.toString())
         if (!isNaN(input)) {
-          value = value.times('1e'+input)
+          return value.times('1e'+input)
         } else {
           throw new Error(`Unkown input unit ${input_unit}`)
         }
@@ -32,7 +32,7 @@ const Converter = {
       default:
         let output = parseInt(output_unit.toString())
         if (!isNaN(output)) {
-          value = value.divide(bigInt(10).pow(output)).toString()
+          return value.divide(bigInt(10).pow(output)).toString()
         } else {
           throw new Error(`Unknown output unit ${output_unit}`)
         }
