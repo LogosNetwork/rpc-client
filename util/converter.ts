@@ -30,17 +30,29 @@ const Converter = {
       case 'reason':
         val = value.toString()
         matches = val.match(/(\.\d*?[1-9])0+$/)
-        return val.replace(matches[0], matches[1])
+        if (matches) {
+          return val.replace(matches[0], matches[1])
+        } else {
+          return val
+        }
       case 'LOGOS':
         val = value.shiftedBy(-30).toFixed(15, 1)
         matches = val.match(/(\.\d*?[1-9])0+$/)
-        return val.replace(matches[0], matches[1])
+        if (matches) {
+          return val.replace(matches[0], matches[1])
+        } else {
+          return val
+        }
       default:
         let output = parseInt(output_unit.toString())
         if (!isNaN(output)) {
           let val = value.shiftedBy(-output).toFixed(15, 1)
           let matches = val.match(/(\.\d*?[1-9])0+$/)
-          return val.replace(matches[0], matches[1])
+          if (matches) {
+            return val.replace(matches[0], matches[1])
+          } else {
+            return val
+          }
         } else {
           throw new Error(`Unknown output unit ${output_unit}`)
         }
