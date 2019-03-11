@@ -24,15 +24,23 @@ const Converter = {
     }
 
     // Step 2: to output
+    let val = null
+    let matches = null
     switch (output_unit) {
       case 'reason':
-        return value.toString()
+        val = value.toString()
+        matches = val.match(/(\.\d*?[1-9])0+$/)
+        return val.replace(matches[0], matches[1])
       case 'LOGOS':
-        return value.shiftedBy(-30).toFixed(15, 1)
+        val = value.shiftedBy(-30).toFixed(15, 1)
+        matches = val.match(/(\.\d*?[1-9])0+$/)
+        return val.replace(matches[0], matches[1])
       default:
         let output = parseInt(output_unit.toString())
         if (!isNaN(output)) {
-          return value.shiftedBy(-output).toFixed(15, 1)
+          let val = value.shiftedBy(-output).toFixed(15, 1)
+          let matches = val.match(/(\.\d*?[1-9])0+$/)
+          return val.replace(matches[0], matches[1])
         } else {
           throw new Error(`Unknown output unit ${output_unit}`)
         }
