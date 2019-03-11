@@ -29,7 +29,7 @@ const Converter = {
     switch (output_unit) {
       case 'reason':
         val = value.toString()
-        matches = val.match(/(\.\d*?[1-9])0+$/)
+        matches = val.match(/(\.\d+?)0+$/)
         if (matches) {
           return val.replace(matches[0], matches[1])
         } else {
@@ -37,7 +37,7 @@ const Converter = {
         }
       case 'LOGOS':
         val = value.shiftedBy(-30).toFixed(15, 1)
-        matches = val.match(/(\.\d*?[1-9])0+$/)
+        matches = val.match(/(\.\d+?)0+$/)
         if (matches) {
           return val.replace(matches[0], matches[1])
         } else {
@@ -47,7 +47,7 @@ const Converter = {
         let output = parseInt(output_unit.toString())
         if (!isNaN(output)) {
           let val = value.shiftedBy(-output).toFixed(15, 1)
-          let matches = val.match(/(\.\d*?[1-9])0+$/)
+          let matches = val.match(/(\.\d+?)0+$/)
           if (matches) {
             return val.replace(matches[0], matches[1])
           } else {
