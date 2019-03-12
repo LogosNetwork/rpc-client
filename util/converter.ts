@@ -33,7 +33,12 @@ const Converter = {
         val = value.shiftedBy(-30).toFixed(15, 1)
         matches = val.match(/(\.\d+?)0+$/)
         if (matches) {
-          return val.replace(matches[0], matches[1])
+          val = val.replace(matches[0], matches[1])
+          if (val.endsWith('.0')) {
+            return val.replace('.0', '')
+          } else {
+            return val
+          }
         } else {
           return val
         }
@@ -43,7 +48,12 @@ const Converter = {
           let val = value.shiftedBy(-output).toFixed(15, 1)
           let matches = val.match(/(\.\d+?)0+$/)
           if (matches) {
-            return val.replace(matches[0], matches[1])
+            val = val.replace(matches[0], matches[1])
+            if (val.endsWith('.0')) {
+              return val.replace('.0', '')
+            } else {
+              return val
+            }
           } else {
             return val
           }
