@@ -17,7 +17,7 @@ const Converter = {
       default:
         let input = parseInt(input_unit.toString())
         if (!isNaN(input)) {
-          value.shiftedBy(input)
+          value = value.shiftedBy(input)
         } else {
           throw new Error(`Unkown input unit ${input_unit}`)
         }
@@ -28,13 +28,7 @@ const Converter = {
     let matches = null
     switch (output_unit) {
       case 'reason':
-        val = value.toString()
-        matches = val.match(/(\.\d+?)0+$/)
-        if (matches) {
-          return val.replace(matches[0], matches[1])
-        } else {
-          return val
-        }
+        return value.toString()
       case 'LOGOS':
         val = value.shiftedBy(-30).toFixed(15, 1)
         matches = val.match(/(\.\d+?)0+$/)
@@ -45,7 +39,7 @@ const Converter = {
         }
       default:
         let output = parseInt(output_unit.toString())
-        if (!isNaN(output)) {
+        if (!isNaN(output) && output !== 0) {
           let val = value.shiftedBy(-output).toFixed(15, 1)
           let matches = val.match(/(\.\d+?)0+$/)
           if (matches) {
@@ -53,6 +47,8 @@ const Converter = {
           } else {
             return val
           }
+        } else if (output === 0) {
+          return value.toString()
         } else {
           throw new Error(`Unknown output unit ${output_unit}`)
         }
