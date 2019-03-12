@@ -28,7 +28,7 @@ const Converter = {
     let matches = null
     switch (output_unit) {
       case 'reason':
-        return value.toString()
+        return value.toFixed(0)
       case 'LOGOS':
         val = value.shiftedBy(-30).toFixed(15, 1)
         matches = val.match(/(\.\d+?)0+$/)
@@ -48,7 +48,7 @@ const Converter = {
             return val
           }
         } else if (output === 0) {
-          return value.toString()
+          return value.toFixed(0)
         } else {
           throw new Error(`Unknown output unit ${output_unit}`)
         }
