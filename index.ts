@@ -7,9 +7,7 @@ import {
   APIBase
 } from './api'
 
-//TODO Change this representative to something signifigant.
-export const LogosRepresentative =
-  'lgs_3rropjiqfxpmrrkooej4qtmm1pueu36f9ghinpho4esfdor8785a455d16nf'
+//TODO Change this on mainnet etc.
 export const minimumFee = '10000000000000000000000'
 
 export type RPCClient = (params: any) => Promise<any>
@@ -45,6 +43,18 @@ export function createAxiosClient(
   }
 }
 
+export const convert = {
+  toReason(amount: string | number, denomination: Denomination) {
+    return Converter.unit(amount, denomination, 'reason')
+  },
+  fromReason(amount: string, denomination: Denomination) {
+    return Converter.unit(amount, 'reason', denomination)
+  },
+  fromTo(amount: string, currentDec: number, preferedDec: number) {
+    return Converter.unit(amount, currentDec, preferedDec)
+  }
+}
+
 export interface LogosConstructorOptions {
   url?: string
   proxyURL?: string
@@ -62,7 +72,7 @@ export class Logos {
   rpc = createAPI<API>(null)
   debug: boolean
 
-  constructor(options: LogosConstructorOptions) {
+  constructor(options: LogosConstructorOptions = {}) {
     this.debug = !!options.debug
     this._log = this._log.bind(this)
 
@@ -306,18 +316,9 @@ export class Logos {
     }
   }
 
+  static convert = convert
   get convert() {
-    return {
-      toReason(amount: string | number, denomination: Denomination) {
-        return Converter.unit(amount, denomination, 'reason')
-      },
-      fromReason(amount: string, denomination: Denomination) {
-        return Converter.unit(amount, 'reason', denomination)
-      },
-      fromTo(amount: string, currentDec: number, preferedDec: number) {
-        return Converter.unit(amount, currentDec, preferedDec)
-      }
-    }
+    return convert
   }
 
   get key() {
