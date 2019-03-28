@@ -1,5 +1,5 @@
 import axios from 'axios'
-const {accountPair, sign, sendHash, keyFromAccount} = require('./util/util.js')
+const {accountPair, keyFromAccount} = require('./util/util.js')
 import Converter from './util/converter'
 
 import {
@@ -128,72 +128,6 @@ export class Logos {
     }
   }
 
-  //Top-level call: send block
-  async createSend(privateKey: string, transactions: MultiSendRequest[],
-    previous: string, sequence: string | number,
-    denomination: Denomination = 'reason',
-    work: string = '0000000000000000',
-    fee: string = minimumFee) {
-    if (!privateKey) throw new Error('Must pass private_key argument')
-    if (!transactions || transactions.length < 1 || transactions.length > 8) throw new Error('Must pass transactions with a length of 1-8')
-    const {address} = accountPair(privateKey)
-    if (!previous) {
-      const {frontier} = await this.accounts.info(address)
-      previous = frontier
-    }
-    if (sequence === null) {
-      if (previous === '0000000000000000000000000000000000000000000000000000000000000000') {
-        sequence = '0'
-      } else {
-        let previousRequest = await this.requests.info(previous)
-        sequence = (parseInt(previousRequest.sequence) + 1).toString()
-      }
-    }
-    if (work === null) work = await this.generateLatestWork(privateKey, previous)
-    for (let transaction of transactions) {
-      if (denomination === 'LOGOS') {
-        transaction.amount = Converter.unit(transaction.amount, 'LOGOS', 'reason')
-      } else if (denomination === 'reason') {
-        transaction.amount = transaction.amount.toString()
-      } else {
-        throw new Error('Unknown Denomination: Please use LOGOS or reason')
-      }
-    }
-
-    // Create Hash
-    let hash = sendHash(address, transactions, previous, sequence, fee)
-
-    // Create Signature
-    let signature = sign(privateKey, hash, address)
-
-    let sendRequest = {
-      previous: previous,
-      sequence: sequence,
-      type: 'send',
-      origin: address,
-      fee: fee,
-      transactions: transactions,
-      number_transactions: transactions.length,
-      hash: hash,
-      next: '0000000000000000000000000000000000000000000000000000000000000000',
-      work: work,
-      signature: signature
-    }
-
-    return sendRequest
-  }
-
-  async generateLatestWork(privateKey: string, previous: string = null) {
-    const {address} = accountPair(privateKey)
-    if (previous === null) {
-      const {frontier} = await this.accounts.info(address)
-      previous = frontier
-    }
-    const {work} = await this.work.generate(previous)
-
-    return work
-  }
-
   //General account methods
   get accounts() {
     const {rpc, _log} = this
@@ -250,13 +184,6 @@ export class Logos {
           _log(`(REQUEST) Published: ${res.hash}`)
           return res
         })
-      },
-      createSend: (privateKey: string, transactions: MultiSendRequest[],
-        previous: string = null, sequence: string | number = null,
-        denomination: Denomination = 'LOGOS', work = '0000000000000000',
-        fee: string = minimumFee) => {
-          if (sequence !== null) sequence = sequence.toString()
-          return this.createSend(privateKey, transactions, previous, sequence, denomination, work, fee)
       }
     }
   }
@@ -302,14 +229,14 @@ export class Logos {
 
     return {
       history(count: string | number, delegateIndex: string | number, hash: string) {
-        return rpc('batch_blocks_latest', {
+        return rpc('request_blocks_latest', {
           count: count || 1000,
           delegate_id: delegateIndex || '0',
           head: hash
         }).then(res => res)
       },
       get(hashes: [string]) {
-        return rpc('batch_blocks', {
+        return rpc('request_blocks', {
           hashes: hashes
         }).then(res => res)
       }
