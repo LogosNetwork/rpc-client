@@ -192,6 +192,11 @@ export class Logos {
     const {rpc} = this
 
     return {
+      delegateIPs(time: 'current' | 'next' = 'current') {
+        return rpc('epoch_delegates', {
+          epoch: time
+        }).then(res => res)
+      },
       history(count: string | number, hash: string) {
         return rpc('epochs_latest', {
           count: count || 1000,

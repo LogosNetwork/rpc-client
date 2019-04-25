@@ -152,6 +152,15 @@ export interface API extends APIBase {
     }
   }
 
+  epoch_delegates: {
+    body: {
+      epoch: "current" | "next"
+    }
+    response: {
+      delegates: DelegateIPs
+    }
+  }
+
   micro_blocks: {
     body: {
       hashes: string[]
@@ -304,4 +313,43 @@ export type AccountInfo = {
   public: string
   private: string
   account: string
+}
+
+export type DelegateIP = {
+  ip: string
+}
+
+export type DelegateIPs = {
+  0: DelegateIP,
+  1: DelegateIP,
+  2: DelegateIP,
+  3: DelegateIP,
+  4: DelegateIP,
+  5: DelegateIP,
+  6: DelegateIP,
+  7: DelegateIP,
+  8: DelegateIP,
+  9: DelegateIP,
+  10: DelegateIP,
+  11: DelegateIP,
+  12: DelegateIP,
+  13: DelegateIP,
+  14: DelegateIP,
+  15: DelegateIP,
+  16: DelegateIP,
+  17: DelegateIP,
+  18: DelegateIP,
+  19: DelegateIP,
+  20: DelegateIP,
+  21: DelegateIP,
+  22: DelegateIP,
+  23: DelegateIP,
+  24: DelegateIP,
+  25: DelegateIP,
+  26: DelegateIP,
+  27: DelegateIP,
+  28: DelegateIP,
+  29: DelegateIP,
+  30: DelegateIP,
+  31: DelegateIP
 }
