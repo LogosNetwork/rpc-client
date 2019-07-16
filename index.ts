@@ -59,11 +59,6 @@ export interface LogosConstructorOptions {
 }
 export type Denomination = 'reason' | 'LOGOS'
 
-export type MultiSendRequest = {
-  destination: string
-  amount: string
-}
-
 export default class Logos {
   rpc = createAPI<API>(null)
   debug: boolean
