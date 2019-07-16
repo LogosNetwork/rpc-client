@@ -1,14 +1,10 @@
 import axios from 'axios'
-const {accountPair, keyFromAccount} = require('./util/util.js')
 import Converter from './util/converter'
 
 import {
   API,
   APIBase
 } from './api'
-
-//TODO Change this on mainnet etc.
-export const minimumFee = '10000000000000000000000'
 
 export type RPCClient = (params: any) => Promise<any>
 function createAPI<API extends APIBase = any>(rpcClient: RPCClient) {
@@ -68,7 +64,7 @@ export type MultiSendRequest = {
   amount: string
 }
 
-export class Logos {
+export default class Logos {
   rpc = createAPI<API>(null)
   debug: boolean
 
@@ -100,31 +96,6 @@ export class Logos {
   _log(message: string) {
     if (this.debug) {
       console.log(message)
-    }
-  }
-
-  account(private_key: string) {
-    const {address} = accountPair(private_key)
-
-    return {
-      reasonBalance: () => {
-        return this.accounts.reasonBalance(address)
-      },
-      logosBalance: () => {
-        return this.accounts.logosBalance(address)
-      },
-      blockCount: () => {
-        return this.accounts.blockCount(address)
-      },
-      history: (count?: number) => {
-        return this.accounts.history(address, count)
-      },
-      info: () => {
-        return this.accounts.info(address)
-      },
-      publicKey: () => {
-        return this.accounts.key(address)
-      }
     }
   }
 
@@ -163,9 +134,6 @@ export class Logos {
           _log(`(ACCOUNT) latest hash: ${account.frontier}`)
           return account
         })
-      },
-      key(account: string) {
-        return keyFromAccount(account)
       }
     }
   }
@@ -310,4 +278,3 @@ export class Logos {
     })
   }
 }
-module.exports = Logos;

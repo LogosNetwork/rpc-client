@@ -18,17 +18,17 @@ Promise-based client for interacting and building services on top of the Logos n
 
 To setup a direct connection to a Logos node do the following
 ```javascript
-const {Logos} = require('logos-rpc-client')
-const logos = new Logos({url: 'http://100.25.175.142:55000'})
+const LogosRPC = require('@logosnetwork/logos-rpc-client')
+const logos = new LogosRPC({url: 'http://3.215.28.211:55000'})
 ```
 
 You may also proxy your RPC calls through another server
 ```javascript
-const {Logos} = require('logos-rpc-client')
-const logos = new Logos({url: 'http://100.25.175.142:55000', proxyURL: 'https://pla.bs'})
+const LogosRPC = require('@logosnetwork/logos-rpc-client')
+const logos = new LogosRPC({url: 'http://3.215.28.211:55000', proxyURL: 'https://pla.bs'})
 ```
 
-For your proxy server include the following to route the rpc call
+To setup a proxy server include something similar to the following in your server
 ```javascript
 app.post('/rpc', async (req, res) => {
   let targetURL = req.body.targetURL
@@ -100,22 +100,6 @@ await logos.account(PRIVATE_KEY).send(0.01, RECIPIENT_ADDRESS)
 
 All methods return native or Bluebird promises and are fully compatible with `async/await`.
 
-### Working with a specific account
-
-If you're just looking to transact with Logos, these methods will cover 90% of your use case.
-
-```typescript
-const account = logos.account(PRIVATE_KEY)
-```
-
-* `account.send(logosAmount: string | number, address: string)`
-* `account.reasonBalance()`
-* `account.logosBalance()`
-* `account.blockCount()`
-* `account.history(count?: number)`
-* `account.info()`
-* `account.publicKey()`
-
 ### Accounts
 
 Account methods take a single account string or in some cases, an array of accounts.
@@ -127,7 +111,6 @@ Account methods take a single account string or in some cases, an array of accou
 * `logos.accounts.blockCount(account: string)`
 * `logos.accounts.history(account: string, count?: number)`
 * `logos.accounts.info(account: string)`
-* `logos.accounts.key(account: string)`
 
 ### Keys
 
@@ -150,12 +133,12 @@ And a method to publish a constructed block to the network:
 
 * `logos.transactions.publish(block: string)`
 
-### Batch Blocks
+### Request Blocks
 
-Allows you to retrieve information on batch blocks
+Allows you to retrieve information on request blocks
 
-* `logos.batchBlocks.history(count: string | number, delegateIndex: string | number, hash: string)`
-* `logos.batchBlocks.get(hashes: [string])`
+* `logos.requestBlocks.history(count: string | number, delegateIndex: string | number, hash: string)`
+* `logos.requestBlocks.get(hashes: [string])`
 
 ### Micro Epochs
 
@@ -172,20 +155,31 @@ Allows you to retrieve information on epochs
 * `logos.epochs.history(count: string | number, hash: string)`
 * `logos.epochs.get(hashes: [string])`
 
-
-### Batch Blocks
-
-Allows you to retrieve information on batch blocks
-
-* `logos.batchBlocks.history(count: string | number, delegateIndex: string | number, hash: string)`
-* `logos.batchBlocks.get(hashes: [string])`
-
-### Convert
+### Unit Converter
 
 Allows you to convert `LOGOS` amounts to and from their reason values. Reason is the smallest unit of the Logos currency.
 
+```javascript
+const LogosRPC = require('@logosnetwork/logos-rpc-client')
+const logos = new LogosRPC({url: 'http://3.215.28.211:55000', proxyURL: 'https://pla.bs'})
+let amountInReason = logos.convert.toReason('1', 'LOGOS')
+```
+
+```typescript
+import { convert } from '@logosnetwork/logos-rpc-client'
+let amountInReason = convert.toReason('1', 'LOGOS')
+let amountInLogos = convert.fromReason('1000000000000000000000000000000', 'LOGOS')
+// Converter can also be used to convert token values
+// or in this example bitcoin into satoshis
+let bitcoinsInSatoshis = convert.fromTo('1', 8, 0)
+// You can use the fromTo function for the example above also
+amountInReason = convert.fromTo('1', 30, 0) // '1000000000000000000000000000000' Reason
+amountInLogos = convert.fromTo('1000000000000000000000000000000', 0, 30) // '1' LOGOS
+```
+
 * `logos.convert.toReason(amount: string | number, denomination: 'LOGOS')`
 * `logos.convert.fromReason(amount: string, denomination: 'LOGOS')`
+* `logos.convert.fromTo(amount: string, currentDec: number, preferedDec: number)`
 
 ### Work
 

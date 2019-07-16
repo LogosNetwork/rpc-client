@@ -51,13 +51,27 @@ export interface API extends APIBase {
       account: string //target wallet
     }
     response: {
-      balance: string
-      block_count: string
+      type: string
       frontier: string
-      modified_timestamp: string
-      open_block: string
       receive_tip: string
-      representative_block: string
+      open_block?: string
+      representative_block?: string
+      balance: string
+      modified_timestamp?: string
+      request_count: string
+      sequence: string
+      token_balance?: string
+      total_supply?: string
+      token_fee_balance?: string
+      symbol?: string
+      name?: string
+      issuer_info?: string
+      fee_rate?: string
+      fee_type?: 'flat' | 'percentage'
+      controllers?: Controller[]
+      settings?: Settings[]
+      issuance_request?: string
+      tokens?: Token
     }
   }
 
@@ -285,20 +299,57 @@ export type MicroEpoch = {
 }
 
 export type Request = {
-  type: string
-  origin: string
-  signature: string
+  hash?: string
+  type?: string
+  origin?: string
+  signature?: string
   previous: string
-  next: string
-  fee: string
-  sequence: string
-  work: string
-  number_transactions: string
-  transactions: MultiSendRequest[]
-  hash: string
+  next?: string
+  fee?: string
+  sequence?: string
+  work?: string
+  number_transactions?: string
+  request_block_hash?: string
+  request_block_index?: string
+  transactions?: Transaction[]
+  transaction?: Transaction
+  send_hash?: string
+  index_to_send_block?: string
+  token_id?: string
+  symbol?: string
+  name?: string
+  total_supply?: string
+  fee_type?: string
+  fee_rate?: string
+  settings?: Settings[]
+  controllers?: Controller[]
+  issuer_info?: string
+  timestamp?: string
+  source?: string
+  status?: 'frozen' | 'unfrozen' | 'whitelist' | 'not_whitelisted'
+  setting?: 'issuance' | 'revoke' | 'freeze' | 'adjust_fee' | 'whitelist'
+  value?: string
+  token_fee?: string
+  action?: 'add' | 'remove'
+  controller?: Controller
+  new_info?: string
 }
 
-export type MultiSendRequest = {
+export type Token = {
+  [tokenID: string]: {
+    whitelisted: string
+    frozen: string
+    balance: string
+  }
+}
+
+export type Controller = {
+  account: string
+  privileges: Privileges[]
+}
+export type Settings = "issuance" | "modify_issuance" | "revoke" | "modify_revoke" | "freeze" | "modify_freeze" | "adjust_fee" | "modify_adjust_fee" | "whitelist" | "modify_whitelist"
+export type Privileges = "change_issuance" | "change_modify_issuance" | "change_revoke" | "change_modify_revoke" | "change_freeze" | "change_modify_freeze" | "change_adjust_fee" | "change_modify_adjust_fee" | "change_whitelist" | "change_modify_whitelist" | "issuance" | "revoke" | "freeze" | "adjust_fee" | "whitelist" | "update_issuer_info" | "update_controller" | "burn" | "distribute" | "withdraw_fee" | "withdraw_logos"
+export type Transaction = {
   destination: string
   amount: string
 }
