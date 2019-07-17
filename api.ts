@@ -319,7 +319,7 @@ export type Request = {
   symbol?: string
   name?: string
   total_supply?: string
-  fee_type?: string
+  fee_type?: 'flat' | 'percentage'
   fee_rate?: string
   settings?: Settings[]
   controllers?: Controller[]
