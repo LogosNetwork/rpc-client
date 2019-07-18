@@ -326,7 +326,7 @@ export type Request = {
   issuer_info?: string
   timestamp?: string
   source?: string
-  status?: 'frozen' | 'unfrozen' | 'whitelist' | 'not_whitelisted'
+  status?: 'frozen' | 'unfrozen' | 'whitelisted' | 'not_whitelisted'
   setting?: 'issuance' | 'revoke' | 'freeze' | 'adjust_fee' | 'whitelist'
   value?: string
   token_fee?: string
